@@ -25,7 +25,7 @@ export function LoginButton() {
             className="w-full gap-2"
             onClick={async () => {
               await signIn.social({
-                callbackURL: '/',
+                callbackURL: 'http://localhost:3001/',
                 provider: 'github',
               })
             }}

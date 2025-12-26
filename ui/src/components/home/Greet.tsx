@@ -1,6 +1,8 @@
-import { trpc } from '@/lib/trpc'
+import { useQuery } from "@tanstack/react-query"
+import { useTRPC } from "@/lib/trpc"
 
 export const Greet = () => {
-  const { data } = trpc.postRouter.hello.useQuery()
-  return <div>{data}</div>
+  const trpc = useTRPC()
+  const { data } = useQuery(trpc.postRouter.hello.queryOptions())
+  return <div>{JSON.stringify(data)}</div>
 }

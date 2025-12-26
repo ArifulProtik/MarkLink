@@ -9,7 +9,8 @@ async function bootstrap() {
     origin: 'http://localhost:3001',
     credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    allowedHeaders: 'Content-Type,Accept,Authorization,X-Requested-With',
+    allowedHeaders:
+      'Content-Type,Accept,Authorization,X-Requested-With,trpc-accept',
     preflightContinue: false,
     optionsSuccessStatus: 204,
   });

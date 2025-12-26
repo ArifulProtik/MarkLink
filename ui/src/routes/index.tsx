@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { Button } from '@/components/ui/button'
+import { Greet } from '@/components/home/Greet'
 
 export const Route = createFileRoute('/')({
   component: RouteComponent,
@@ -9,6 +10,7 @@ export const Route = createFileRoute('/')({
 function RouteComponent() {
   return (
     <>
+      <Greet />
       <Button variant="default">Default</Button>
       <Button variant="outline">Outline</Button>
       <Button variant="secondary">Secondary</Button>

@@ -1,9 +1,8 @@
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-
-import { Header } from '../components/layout/header'
 import appCss from '../styles.css?url'
+import { TrpcProvider } from '@/components/TrpcProvider'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -36,9 +35,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body>
-        <Header />
-        {children}
+      <body suppressHydrationWarning>
+        <TrpcProvider>{children}</TrpcProvider>
         <TanStackDevtools
           config={{
             position: 'bottom-right',

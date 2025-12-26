@@ -24,8 +24,13 @@ export function UserButton({ user }: UserButtonProps) {
         })}
       >
         <Avatar className="h-8 w-8">
-          <AvatarImage src={user.image ?? ''} alt={user.name ?? 'User'} />
-          <AvatarFallback>{user.name?.charAt(0) ?? 'U'}</AvatarFallback>
+          <AvatarImage
+            src={user.image ? user.image : ''}
+            alt={user.name ? user.name : 'User'}
+          />
+          <AvatarFallback>
+            {user.name ? user.name.charAt(0) : 'U'}
+          </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end">

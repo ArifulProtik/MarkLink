@@ -1,8 +1,7 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 // import superjson from "superjson";
-import { useState } from "react";
-import {  TRPCProvider, trpcClient } from "@/lib/trpc";
-
+import { useState } from 'react'
+import { TRPCProvider, trpcClient } from '@/lib/trpc'
 
 export const TrpcProvider = ({ children }: { children: React.ReactNode }) => {
   const [queryClient] = useState(() => new QueryClient())
@@ -12,5 +11,5 @@ export const TrpcProvider = ({ children }: { children: React.ReactNode }) => {
         {children}
       </TRPCProvider>
     </QueryClientProvider>
-  );
-};
+  )
+}

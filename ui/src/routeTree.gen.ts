@@ -9,10 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WriteRouteImport } from './routes/write'
 import { Route as PostRouteImport } from './routes/post'
 import { Route as MainRouteRouteImport } from './routes/_main/route'
 import { Route as MainIndexRouteImport } from './routes/_main/index'
 
+const WriteRoute = WriteRouteImport.update({
+  id: '/write',
+  path: '/write',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PostRoute = PostRouteImport.update({
   id: '/post',
   path: '/post',
@@ -30,33 +36,44 @@ const MainIndexRoute = MainIndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/post': typeof PostRoute
+  '/write': typeof WriteRoute
   '/': typeof MainIndexRoute
 }
 export interface FileRoutesByTo {
   '/post': typeof PostRoute
+  '/write': typeof WriteRoute
   '/': typeof MainIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_main': typeof MainRouteRouteWithChildren
   '/post': typeof PostRoute
+  '/write': typeof WriteRoute
   '/_main/': typeof MainIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/post' | '/'
+  fullPaths: '/post' | '/write' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/post' | '/'
-  id: '__root__' | '/_main' | '/post' | '/_main/'
+  to: '/post' | '/write' | '/'
+  id: '__root__' | '/_main' | '/post' | '/write' | '/_main/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   MainRouteRoute: typeof MainRouteRouteWithChildren
   PostRoute: typeof PostRoute
+  WriteRoute: typeof WriteRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/write': {
+      id: '/write'
+      path: '/write'
+      fullPath: '/write'
+      preLoaderRoute: typeof WriteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/post': {
       id: '/post'
       path: '/post'
@@ -96,6 +113,7 @@ const MainRouteRouteWithChildren = MainRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   MainRouteRoute: MainRouteRouteWithChildren,
   PostRoute: PostRoute,
+  WriteRoute: WriteRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

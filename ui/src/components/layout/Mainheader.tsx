@@ -1,16 +1,27 @@
-import { Link } from "@tanstack/react-router";
-import { GetStartedBtn } from "../home/GetStartedBtn";
+import { Link } from '@tanstack/react-router'
+import { GetStartedBtn } from '../home/GetStartedBtn'
+import { AvaterBtn } from '../home/AvaterBtn'
+import type { User } from 'better-auth'
 
-export function MainHeader() {
+type MainHeaderProps = {
+  User: User | null | undefined
+}
 
+export function MainHeader({ User }: MainHeaderProps) {
   return (
-    <header className="w-full border-b text-center">
-      <div className="container mx-auto">
-        <div className="flex items-center justify-between w-full py-2">
+    <header className="w-full border-b font-normal">
+      <div className="container-fluid">
+        <div className="flex items-center justify-between w-full py-2 h-16">
           <Link to="/">
-            <h1 className="text-2xl font-bold font-mono">MarkLink</h1>
+            <h1 className="text-2xl font-bold">MarkLink</h1>
           </Link>
-          <GetStartedBtn />
+
+          <div className="flex items-center gap-4">
+            <Link to="/">Our Story</Link>
+            <Link to="/write"> Write</Link>
+
+            {User ? <AvaterBtn User={User} /> : <GetStartedBtn />}
+          </div>
         </div>
       </div>
     </header>

@@ -6,9 +6,10 @@ export const Route = createFileRoute('/_main')({
 })
 
 function RouteComponent() {
+  const ctx = Route.useRouteContext()
   return (
     <>
-      <MainHeader />
+      <MainHeader User={ctx.user} />
       <Outlet />
     </>
   )

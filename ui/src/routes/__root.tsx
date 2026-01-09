@@ -2,9 +2,15 @@ import { TanStackDevtools } from '@tanstack/react-devtools'
 import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import appCss from '../styles.css?url'
+import type { AuthContext } from '@/router'
 import { TrpcProvider } from '@/components/TrpcProvider'
+import { getAuthSession } from '@/data/server-auth'
 
 export const Route = createRootRoute({
+  beforeLoad: async () => {
+    const auth = await getAuthSession()
+    return { user: auth.data?.user } satisfies AuthContext
+  },
   head: () => ({
     links: [
       {

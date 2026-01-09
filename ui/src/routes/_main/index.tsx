@@ -5,5 +5,9 @@ export const Route = createFileRoute('/_main/')({
 })
 
 function RouteComponent() {
-  return <div>Hello "/"!</div>
+  const ctx = Route.useRouteContext()
+  if (!ctx.user) {
+    return <>Not Logged in</>
+  }
+  return <div>This is the main route! hello {ctx.user.name} </div>
 }

@@ -10,13 +10,22 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import { authClient } from '@/lib/auth-client'
 
 export function GetStartedBtn() {
+  const handleSignIn = async () => {
+    await authClient.signIn.social({
+      provider: 'github',
+      callbackURL: 'http://localhost:3001',
+    })
+  }
   return (
     <>
       <Dialog>
         <DialogTrigger>
-          <Button className={'cursor-pointer'}>Get Started</Button>
+          <Button size={'lg'} className={'cursor-pointer'}>
+            Get Started
+          </Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
@@ -24,7 +33,11 @@ export function GetStartedBtn() {
             <DialogDescription>Please signin to use MarkLink</DialogDescription>
           </DialogHeader>
 
-          <Button variant={'outline'} className={'cursor-pointer'}>
+          <Button
+            onClick={handleSignIn}
+            variant={'outline'}
+            className={'cursor-pointer'}
+          >
             <HugeiconsIcon icon={GithubIcon} />
             Signin with Github
           </Button>

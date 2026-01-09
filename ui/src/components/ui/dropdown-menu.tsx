@@ -1,8 +1,8 @@
-import { Menu as MenuPrimitive } from '@base-ui/react/menu'
-import { ArrowRight01Icon, Tick02Icon } from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/react'
 import * as React from 'react'
+import { Menu as MenuPrimitive } from '@base-ui/react/menu'
 
+import { HugeiconsIcon } from '@hugeicons/react'
+import { ArrowRight01Icon, Tick02Icon } from '@hugeicons/core-free-icons'
 import { cn } from '@/lib/utils'
 
 function DropdownMenu({ ...props }: MenuPrimitive.Root.Props) {
@@ -20,9 +20,9 @@ function DropdownMenuTrigger({ ...props }: MenuPrimitive.Trigger.Props) {
 function DropdownMenuContent({
   align = 'start',
   alignOffset = 0,
-  className,
   side = 'bottom',
   sideOffset = 4,
+  className,
   ...props
 }: MenuPrimitive.Popup.Props &
   Pick<
@@ -123,9 +123,9 @@ function DropdownMenuSub({ ...props }: MenuPrimitive.SubmenuRoot.Props) {
 }
 
 function DropdownMenuSubTrigger({
-  children,
   className,
   inset,
+  children,
   ...props
 }: MenuPrimitive.SubmenuTrigger.Props & {
   inset?: boolean
@@ -158,9 +158,9 @@ function DropdownMenuSubTrigger({
 function DropdownMenuSubContent({
   align = 'start',
   alignOffset = -3,
-  className,
   side = 'right',
   sideOffset = 0,
+  className,
   ...props
 }: React.ComponentProps<typeof DropdownMenuContent>) {
   return (
@@ -187,9 +187,9 @@ function DropdownMenuSubContent({
 }
 
 function DropdownMenuCheckboxItem({
-  checked,
-  children,
   className,
+  children,
+  checked,
   ...props
 }: MenuPrimitive.CheckboxItem.Props) {
   return (
@@ -231,8 +231,8 @@ function DropdownMenuRadioGroup({ ...props }: MenuPrimitive.RadioGroup.Props) {
 }
 
 function DropdownMenuRadioItem({
-  children,
   className,
+  children,
   ...props
 }: MenuPrimitive.RadioItem.Props) {
   return (

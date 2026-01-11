@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@plugin '@tailwindcss/typography';
 @import 'tailwindcss/preflight.css' layer(base);
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
@@ -130,4 +131,62 @@
   .container-fluid {
     @apply mx-auto max-w-6xl px-4 w-full;
   }
+  .post-container {
+    @apply max-w-2xl w-full px-2 mx-auto;
+  }
+
+  /* Editor Styles */
+  .drag-handle {
+    @apply sticky w-6 h-6 flex items-center justify-center text-muted-foreground/50 hover:text-foreground cursor-grab active:cursor-grabbing rounded-sm hover:bg-muted transition-colors;
+  }
+
+  /* Placeholder: Only show "Tell your story..." when the editor is completely empty */
+  .tiptap.is-editor-empty > .is-empty::before {
+    color: var(--muted-foreground);
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  /* Ensure headings show placeholders if they are empty */
+  .tiptap h1.is-empty::before,
+  .tiptap h2.is-empty::before,
+  .tiptap h3.is-empty::before {
+    @apply text-muted-foreground/50 pointer-events-none float-left h-0;
+    content: attr(data-placeholder);
+    opacity: 0.5;
+  }
+
+  /* Bubble Menu */
+  .bubble-menu {
+    @apply flex items-center gap-1 rounded-md border bg-popover text-popover-foreground shadow-md p-1;
+  }
+
+  .bubble-menu-button {
+    @apply p-1.5 hover:bg-muted rounded text-muted-foreground hover:text-foreground transition-colors;
+  }
+
+  .bubble-menu-button.is-active {
+    @apply bg-muted text-foreground font-medium;
+  }
+}
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: var(--muted-foreground);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+  opacity: 0.5;
+}
+.ProseMirror h1.is-empty::before,
+.ProseMirror h2.is-empty::before,
+.ProseMirror h3.is-empty::before {
+  color: var(--muted-foreground);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+  opacity: 0.5;
 }

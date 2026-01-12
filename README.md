@@ -1,98 +1,159 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# MarkLink
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+> A Blog and Book Writing And Publishing Platform where people can connect, write, share, and publish.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+MarkLink is a comprehensive platform designed for writers and readers to engage in a seamless ecosystem of content creation and consumption. Whether you're drafting your next novel, sharing a quick thought, or connecting with your favorite authors, MarkLink provides the tools you need.
 
-## Description
+## Features
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### ✍️ Writing & Publishing
 
-## Project setup
+- **Advanced Editor**: A powerful, notion-style editor based on Tiptap for a rich writing experience.
+- **Blogs & Books**: Support for both short-form blog posts and long-form book publishing.
+- **Drafts**: Save your work in progress and publish when ready.
+
+### 🌐 Social Connectivity
+
+- **Moments**: Share short, social-media-style posts to engage with your audience instantly.
+- **Chat**: Real-time messaging to connect privately with other users and authors.
+- **Follow System**: Build your network by following favorite authors and creators to stay updated with their latest work.
+
+### 🔗 Sharing
+
+- **Easy Sharing**: Share your published stories and moments across platforms with a single click.
+
+## Tech Stack
+
+MarkLink is built using a modern, robust, and scalable technology stack:
+
+### Backend
+
+- **[NestJS](https://nestjs.com/)**: A progressive Node.js framework for building efficient and scalable server-side applications.
+- **[Drizzle ORM](https://orm.drizzle.team/)**: TypeScript-first Object Relational Mapper for maximum type safety.
+- **[PostgreSQL](https://www.postgresql.org/)**: Advanced open-source relational database.
+- **[Better Auth](https://better-auth.com/)**: Secure authentication solution.
+- **[tRPC](https://trpc.io/)**: End-to-end typesafe APIs.
+
+### Frontend
+
+- **[React](https://react.dev/)**: The library for web and native user interfaces.
+- **[TanStack Start](https://tanstack.com/start)**: Full-stack React framework.
+- **[TanStack Router](https://tanstack.com/router)**: Type-safe routing for React applications.
+- **[TanStack Query](https://tanstack.com/query)**: Powerful asynchronous state management.
+- **[Tailwind CSS](https://tailwindcss.com/)**: A utility-first CSS framework for rapid UI development.
+- **[Shadcn UI](https://ui.shadcn.com/)**: Beautifully designed components built with Radix UI and Tailwind CSS.
+- **[Bun](https://bun.sh/)**: Fast all-in-one JavaScript runtime and package manager.
+
+## Getting Started
+
+Follow these instructions to set up the project locally.
+
+### Prerequisites
+
+Ensure you have the following installed on your machine:
+
+- **[Bun](https://bun.sh/)** (v1.x or higher)
+- **Node.js** (v20 or higher - though Bun is the primary runtime)
+- **PostgreSQL** (running locally or a cloud instance)
+
+### Installation
+
+1. **Clone the repository** (if not already done):
+
+   ```bash
+   git clone <repository-url>
+   cd marklink
+   ```
+
+2. **Install dependencies** for the root workspace:
+
+   ```bash
+   bun install
+   ```
+
+3. **Install dependencies** for the frontend:
+   ```bash
+   cd ui
+   bun install
+   cd ..
+   ```
+
+### Environment Setup
+
+1. **Backend Environment**:
+   Duplicate the `.env.example` file (if available) or create a `.env` file in the root directory:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   _Make sure to update `DATABASE_URL` and other secrets._
+
+2. **Frontend Environment**:
+   Create a `.env.local` file in the `ui` directory:
+   ```bash
+   cp ui/.env.example ui/.env.local
+   ```
+
+### Database Setup
+
+Use Drizzle Kit to push the schema to your database:
 
 ```bash
-$ npm install
+bun run db:push
 ```
 
-## Compile and run the project
+### Running the Project
+
+You can run the backend and frontend separately.
+
+#### 1. Backend (API)
+
+Start the NestJS server in development mode:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+bun run start:dev
 ```
 
-## Run tests
+The server will typically run on `http://localhost:3000`.
+
+#### 2. Frontend (UI)
+
+Open a new terminal window, navigate to the `ui` directory (if you want to run it directly from there) or use the root script if configured. Assuming you run it from the root specifically for the UI workspace:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+bun run ui:dev
 ```
 
-## Deployment
+_Note: Make sure you have a script `ui:dev` effectively running `cd ui && bun run dev` or navigate to `ui` and run `bun run dev`._
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+The frontend will be available at `http://localhost:3001` (or the port specified in your Vite config).
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## Project Structure
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+```
+marklink/
+├── src/            # Backend (NestJS) source code
+│   ├── app.module.ts
+│   └── ...
+├── ui/             # Frontend (React + TanStack) source code
+│   ├── src/
+│   │   ├── routes/
+│   │   ├── components/
+│   │   └── ...
+├── drizzle/        # Database schema and migrations
+├── package.json    # Root scripts and dependencies
+└── README.md       # Project documentation
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Contributing
 
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+1. Fork the repository.
+2. Create your feature branch (`git checkout -b feature/amazing-feature`).
+3. Commit your changes (`git commit -m 'Add some amazing feature'`).
+4. Push to the branch (`git push origin feature/amazing-feature`).
+5. Open a Pull Request.
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+This project is currently private/UNLICENSED.

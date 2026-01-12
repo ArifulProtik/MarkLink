@@ -6,7 +6,7 @@ import Link from '@tiptap/extension-link'
 import { EditorBubbleMenu } from './EditorBubbleMenu'
 import { EditorBlockMenu } from './EditorBlockMenu'
 
-export function Editor() {
+function Editor() {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -42,3 +42,4 @@ export function Editor() {
     </>
   )
 }
+export default Editor

@@ -1,6 +1,6 @@
+import Editor from '../Editor/Editor'
 import { WriteNavbar } from './WriteNavbar'
 import { TitileInput } from './TitileInput'
-import { Editor } from './Editor'
 
 export function WriteComponent() {
   return (

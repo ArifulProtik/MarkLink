@@ -1,6 +1,21 @@
-import { PlusSignIcon } from '@hugeicons/core-free-icons'
+import {
+  HeadingIcon,
+  ImageAdd02Icon,
+  LeftToRightListBulletIcon,
+  LeftToRightListNumberIcon,
+  PlusSignIcon,
+  QuoteUpIcon,
+  SourceCodeIcon,
+} from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { FloatingMenu } from '@tiptap/react/menus'
+import { useEditorState } from '@tiptap/react'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../ui/dropdown-menu'
 import type { Editor } from '@tiptap/react'
 
 type EditorBlockMenuProps = {
@@ -20,16 +35,49 @@ export const EditorBlockMenu = ({ editor }: EditorBlockMenuProps) => {
         }}
         className="flex items-center -ml-16"
       >
-        <button
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 1 }).run()
-          }
-          className="p-1 text-muted-foreground hover:text-foreground
-            hover:bg-muted rounded border border-primary"
-          title="Add Heading"
-        >
-          <HugeiconsIcon icon={PlusSignIcon} size={20} />
-        </button>
+        <DropdownMenu>
+          <DropdownMenuTrigger className="border border-foreground p-0.5">
+            <HugeiconsIcon icon={PlusSignIcon} size={20} />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem
+              onClick={() =>
+                editor.chain().focus().toggleHeading({ level: 2 }).run()
+              }
+            >
+              <HugeiconsIcon icon={HeadingIcon} />
+              Heading
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => editor.chain().focus().toggleBlockquote().run()}
+            >
+              <HugeiconsIcon icon={QuoteUpIcon} />
+              Quote
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => editor.chain().focus().toggleBulletList().run()}
+            >
+              <HugeiconsIcon icon={LeftToRightListBulletIcon} />
+              List
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => editor.chain().focus().toggleOrderedList().run()}
+            >
+              <HugeiconsIcon icon={LeftToRightListNumberIcon} />
+              Numbered List
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+            >
+              <HugeiconsIcon icon={SourceCodeIcon} />
+              Code
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <HugeiconsIcon icon={ImageAdd02Icon} />
+              Image
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </FloatingMenu>
     </>
   )

@@ -1,12 +1,13 @@
 import { BubbleMenu } from '@tiptap/react/menus'
 import {
+  CodeIcon,
   Link01Icon,
   TextBoldIcon,
   TextItalicIcon,
   TextStrikethroughIcon,
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import clsx from 'clsx'
+import { useEditorState } from '@tiptap/react'
 import type { Editor } from '@tiptap/react'
 
 type EditorBubbleMenuProps = {
@@ -14,36 +15,51 @@ type EditorBubbleMenuProps = {
 }
 
 export const EditorBubbleMenu = ({ editor }: EditorBubbleMenuProps) => {
+  const { isBold, isItalic, isStrikethrough, isLink, isCode } = useEditorState({
+    editor,
+    selector: (ctx) => ({
+      isBold: ctx.editor.isActive('bold'),
+      isItalic: ctx.editor.isActive('italic'),
+      isStrikethrough: ctx.editor.isActive('strike'),
+      isLink: ctx.editor.isActive('link'),
+      isCode: ctx.editor.isActive('code'),
+    }),
+  })
   return (
     <BubbleMenu editor={editor} className="bubble-menu">
       <button
+        className={
+          isBold ? 'bubble-menu-button is-active' : 'bubble-menu-button'
+        }
         onClick={() => editor.chain().focus().toggleBold().run()}
-        className={clsx('bubble-menu-button', {
-          'is-active': editor.isActive('bold'),
-        })}
         title="Bold"
       >
         <HugeiconsIcon icon={TextBoldIcon} size={16} />
       </button>
       <button
+        className={
+          isItalic ? 'bubble-menu-button is-active' : 'bubble-menu-button'
+        }
         onClick={() => editor.chain().focus().toggleItalic().run()}
-        className={clsx('bubble-menu-button', {
-          'is-active': editor.isActive('italic'),
-        })}
         title="Italic"
       >
         <HugeiconsIcon icon={TextItalicIcon} size={16} />
       </button>
       <button
+        className={
+          isStrikethrough
+            ? 'bubble-menu-button is-active'
+            : 'bubble-menu-button'
+        }
         onClick={() => editor.chain().focus().toggleStrike().run()}
-        className={clsx('bubble-menu-button', {
-          'is-active': editor.isActive('strike'),
-        })}
         title="Strike"
       >
         <HugeiconsIcon icon={TextStrikethroughIcon} size={16} />
       </button>
       <button
+        className={
+          isLink ? 'bubble-menu-button is-active' : 'bubble-menu-button'
+        }
         onClick={() => {
           const previousUrl = editor.getAttributes('link').href
           const url = window.prompt('URL', previousUrl)
@@ -61,12 +77,18 @@ export const EditorBubbleMenu = ({ editor }: EditorBubbleMenuProps) => {
             .setLink({ href: url })
             .run()
         }}
-        className={clsx('bubble-menu-button', {
-          'is-active': editor.isActive('link'),
-        })}
         title="Link"
       >
         <HugeiconsIcon icon={Link01Icon} size={16} />
+      </button>
+      <button
+        className={
+          isCode ? 'bubble-menu-button is-active' : 'bubble-menu-button'
+        }
+        onClick={() => editor.chain().focus().toggleCode().run()}
+        title="inline code"
+      >
+        <HugeiconsIcon icon={CodeIcon} size={16} />
       </button>
     </BubbleMenu>
   )

@@ -9,13 +9,14 @@ import {
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { FloatingMenu } from '@tiptap/react/menus'
-import { useEditorState } from '@tiptap/react'
+import { useState } from 'react'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
+import { EditorImageAdd } from './EditorImageAdd'
 import type { Editor } from '@tiptap/react'
 
 type EditorBlockMenuProps = {
@@ -23,6 +24,7 @@ type EditorBlockMenuProps = {
 }
 
 export const EditorBlockMenu = ({ editor }: EditorBlockMenuProps) => {
+  const [isOpen, setIsOpen] = useState<boolean>(false)
   return (
     <>
       <FloatingMenu
@@ -35,6 +37,11 @@ export const EditorBlockMenu = ({ editor }: EditorBlockMenuProps) => {
         }}
         className="flex items-center -ml-16"
       >
+        <EditorImageAdd
+          editor={editor}
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+        />
         <DropdownMenu>
           <DropdownMenuTrigger className="border border-foreground p-0.5">
             <HugeiconsIcon icon={PlusSignIcon} size={20} />
@@ -72,7 +79,7 @@ export const EditorBlockMenu = ({ editor }: EditorBlockMenuProps) => {
               <HugeiconsIcon icon={SourceCodeIcon} />
               Code
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setIsOpen(true)}>
               <HugeiconsIcon icon={ImageAdd02Icon} />
               Image
             </DropdownMenuItem>

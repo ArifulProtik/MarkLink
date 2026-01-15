@@ -197,7 +197,7 @@
       @apply bg-muted px-2 py-0.5 rounded;
     }
     h2 {
-      @apply scroll-m-20! text-2xl font-semibold tracking-tight p-0! m-0! mb-3!;
+      @apply scroll-m-20! text-2xl! font-semibold! tracking-tight p-0! m-0! mb-3!;
     }
     ul {
       @apply my-6! ml-6! list-disc! [&>li]:m-0! text-foreground;

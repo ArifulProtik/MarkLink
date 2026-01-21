@@ -5,5 +5,5 @@ export const Route = createFileRoute('/post')({
 })
 
 function RouteComponent() {
-  return <div>Hello "/post"!</div>
+  return <div>v Hello "/post"! codeium you there?</div>
 }

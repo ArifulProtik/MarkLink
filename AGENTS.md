@@ -1,231 +1,146 @@
-# AGENTS.md - Agentic Coding Guidelines for MarkLink
+# AGENTS.md - MarkLink Development Guidelines
 
-## Project Overview
+This document outlines the coding standards, environment setup, and operational guidelines for agents working on the MarkLink repository.
+MarkLink is a full-stack web application utilizing **TanStack Start** (Frontend) and **ElysiaJS** (Backend).
 
-MarkLink is a blog and book writing/publishing platform built with:
-- **Frontend**: React 19 + TanStack Start + TanStack Router + TanStack Query + Tailwind CSS v4
-- **Backend**: HonoJS + Drizzle ORM + PostgreSQL + tRPC + Better Auth
-- **Runtime**: Bun (preferred over Node.js)
-- **UI Components**: Shadcn UI (base-lyra style) + Hugeicons
+## 1. Project Structure
 
-## Build/Lint/Test Commands
+The repository is organized into a monorepo-like structure:
 
-All commands should be run from the `ui/` directory using Bun:
+- **/ui**: Frontend application (React, TanStack Start, Vite).
+- **/backend**: Backend API (Intended: ElysiaJS, Drizzle ORM).
+- **Root**: Contains project-wide documentation.
 
+## 2. Environment & Commands
+
+The project uses **Bun** as the primary runtime and package manager.
+
+### UI Directory (`/ui`)
+
+| Command | Description |
+| :--- | :--- |
+| `bun install` | Install dependencies. |
+| `bun dev` | Start development server (Port 3001). |
+| `bun build` | Build for production. |
+| `bun preview` | Preview production build. |
+| `bun test` | Run tests via Vitest. |
+| `bun lint` | Run ESLint. |
+| `bun format` | Run Prettier. |
+| `bun check` | Run Prettier (write) and ESLint (fix). |
+
+**Running a Single Test:**
+To run a specific test file, use:
 ```bash
-# Install dependencies
-bun install
-
-# Development server (port 3001)
-bun run dev
-
-# Production build
-bun run build
-
-# Preview production build
-bun run preview
-
-# Run all tests
-bun run test
-
-# Run a single test file
-bun test src/path/to/file.test.ts
-
-# Run tests matching a pattern
-bun test --test-name-pattern "test name pattern"
-
-# Linting
-bun run lint
-
-# Formatting
-bun run format
-
-# Fix all linting and formatting issues
-bun run check
+cd ui && bun test src/path/to/file.test.tsx
 ```
 
-### Testing Framework
+### Backend Directory (`/backend`)
 
-Tests use Vitest (via `bun test`). Test files should be named `*.test.ts` or `*.test.tsx`.
+*Note: Backend directory may be in initial state. Standard ElysiaJS commands apply.*
 
-```typescript
-import { test, expect } from 'bun:test'
+| Command | Description |
+| :--- | :--- |
+| `bun install` | Install dependencies. |
+| `bun dev` | Start backend server (Expected Port 3000). |
+| `bun test` | Run backend tests. |
 
-test('example test', () => {
-  expect(1).toBe(1)
-})
-```
+### Database (Drizzle ORM)
 
-## Code Style Guidelines
+| Command | Description |
+| :--- | :--- |
+| `bun run db:push` | Push schema changes to the database. |
 
-### Formatting (Prettier)
+## 3. Code Style & Conventions
 
-- No semicolons (`semi: false`)
-- Single quotes (`singleQuote: true`)
-- Trailing commas everywhere (`trailingComma: 'all'`)
-- Uses `prettier-plugin-classnames` for Tailwind class formatting
+Strictly adhere to the following conventions to maintain consistency.
 
-### TypeScript Configuration
+### 3.1 Formatting (Prettier)
 
-- Target: ES2022
-- Strict mode enabled
-- No unused locals or parameters
-- Path alias: `@/*` maps to `./src/*`
+Configuration is enforced via `.prettierrc` / `prettier.config.js`.
+- **Indentation:** 2 spaces.
+- **Semi-colons:** `false` (No semicolons).
+- **Single Quote:** `true`.
+- **Trailing Comma:** `all`.
+- **Plugins:** `prettier-plugin-classnames` is used for sorting Tailwind classes.
 
-### Import Order
+### 3.2 Linting (ESLint)
 
-Uses `@tanstack/eslint-config` with perfectionist plugin. Organize imports as:
+- Uses `@tanstack/eslint-config`.
+- **Strict Mode:** TypeScript `strict: true` is enabled.
+- **No Unused Locals:** Enabled.
+- **No Fallthrough:** Enabled.
 
-```typescript
-// 1. External packages (React, libraries)
-import { useState } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+### 3.3 TypeScript
 
-// 2. Internal aliases (@/)
-import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+- **Imports:**
+  - Use absolute paths with the `@/` alias (e.g., `import ... from '@/components/...'`).
+  - Avoid relative imports like `../../` for app code; use alias.
+  - Group imports: Built-ins -> External Packages -> Internal Components -> Styles/Assets.
+- **Types:**
+  - Use `type` over `interface` for consistency unless declaration merging is required.
+  - Explicitly type component props: `type ComponentProps = { ... }`.
+  - Avoid `any`. Use `unknown` with narrowing or Zod schemas.
 
-// 3. Relative imports
-import { LocalComponent } from './LocalComponent'
+### 3.4 Frontend (React / TanStack Start)
 
-// 4. Type imports (use 'import type' syntax)
-import type { SomeType } from '@/types'
-```
+- **Components:**
+  - Use Functional Components: `export function MyComponent() { ... }`.
+  - Naming: PascalCase for components (`MyComponent.tsx`), camelCase for helpers/hooks (`useHook.ts`).
+  - Colocation: Keep related styles/types near the component if not shared.
+  - **Shadcn UI:** Reusable primitives are in `ui/src/components/ui`. Do not modify these unless necessary; extend or wrap them instead.
 
-### Component Structure
+- **Routing (TanStack Router):**
+  - File-based routing in `ui/src/routes`.
+  - Use `createFileRoute` for route definitions.
+  - Use `createRootRoute` for the application shell.
+  - Loaders: Place data loading logic in `loader` functions within route files.
 
-```typescript
-// Component file structure:
-// 1. Imports
-// 2. Type definitions
-// 3. Helper functions/constants
-// 4. Component function
-// 5. Export
+- **Styling (Tailwind CSS):**
+  - Use utility classes for styling.
+  - Use `clsx` and `tailwind-merge` (typically exposed as `cn` utility) for conditional classes.
+  - Avoid inline `style={{ ... }}` props; use Tailwind classes.
 
-import { cn } from '@/lib/utils'
-import type { VariantProps } from 'class-variance-authority'
+- **Data Fetching (tRPC):**
+  - The app uses tRPC with TanStack Query.
+  - Client setup: `ui/src/lib/trpc.ts`.
+  - Usage: `const { data } = trpcClient.router.procedure.useQuery(...)`.
 
-type ComponentProps = {
-  title: string
-  onClick: () => void
-}
+### 3.5 Backend (ElysiaJS)
 
-function ComponentName({ title, onClick }: ComponentProps) {
-  return (
-    <div className="flex items-center">
-      {title}
-    </div>
-  )
-}
+- **Architecture:**
+  - **Controllers:** Define routes and validation.
+  - **Services:** Handle business logic and database interactions.
+  - **Models:** Zod schemas or ORM definitions.
+- **Validation:**
+  - Use `t` from Elysia (which uses TypeBox/Zod) for request/response validation.
+  - Example: `.post('/route', handler, { body: t.Object({ ... }) })`.
 
-export { ComponentName }
-// or: export default ComponentName
-```
+## 4. Error Handling
 
-### Naming Conventions
+- **Frontend:**
+  - Use Error Boundaries (TanStack Router supports `errorComponent`).
+  - Handle Loading states via Suspense or `isLoading` flags.
+  - Graceful UI degradation for network errors.
+- **Backend:**
+  - Return standardized error responses.
+  - Use standard HTTP status codes (400 for bad input, 401 for auth, 500 for server).
 
-- **Components**: PascalCase (`WriteComponent.tsx`, `EditorBubbleMenu.tsx`)
-- **Utilities/hooks**: camelCase (`utils.ts`, `auth-client.ts`)
-- **Routes**: kebab-case or underscore for layout routes (`_main/route.tsx`, `write.tsx`)
-- **Types**: PascalCase with descriptive names (`AuthContext`, `TitileInputProps`)
-- **Functions**: camelCase (`getAuthSession`, `createTRPCClient`)
-- **Constants**: camelCase or SCREAMING_SNAKE_CASE for true constants
+## 5. Development Workflow for Agents
 
-### React Patterns
+1.  **Analysis First:**
+    - Before editing, run `ls -F` and `read` to understand the file context.
+    - Check `package.json` for available scripts.
+2.  **Atomic Changes:**
+    - Focus on one task/feature at a time.
+    - Verify changes with `bun check` or `bun test` before considering the task complete.
+3.  **Safety:**
+    - **Do not** modify `.lock` files manually.
+    - **Do not** commit secrets or `.env` files.
+4.  **Pathing:**
+    - ALWAYS use **Absolute Paths** when using file tools.
+    - Resolve paths relative to the project root (`/Users/kakashi/workspace/web/marklink`).
 
-- Use functional components only
-- Prefer named exports for components
-- Use TanStack Router's file-based routing conventions:
-  - `routes/__root.tsx` - Root layout
-  - `routes/_main/route.tsx` - Layout route (underscore prefix)
-  - `routes/_main/index.tsx` - Index route
-  - `routes/write.tsx` - Standalone route
+## 6. External Rules
 
-### Tailwind CSS
-
-- Use Tailwind v4 with CSS-first configuration
-- Utility classes in `className` prop
-- Use `cn()` helper for conditional classes:
-
-```typescript
-import { cn } from '@/lib/utils'
-
-<div className={cn('base-class', isActive && 'active-class')} />
-```
-
-- Custom CSS variables defined in `src/styles.css`
-- Use semantic color tokens: `bg-background`, `text-foreground`, `text-muted-foreground`
-
-### UI Components (Shadcn)
-
-- Components live in `src/components/ui/`
-- Use `class-variance-authority` (cva) for variants
-- Base UI components from `@base-ui/react`
-- Icons from `@hugeicons/react`
-
-### Error Handling
-
-- Use TypeScript strict mode for type safety
-- Validate environment variables with `@t3-oss/env-core` + Zod
-- Handle async errors appropriately in server functions
-
-### tRPC Integration
-
-- Client setup in `src/lib/trpc.ts`
-- Use `TrpcProvider` wrapper for React Query integration
-- Server functions use `createServerFn` from TanStack Start
-
-### Authentication
-
-- Uses `better-auth` with `authClient`
-- Session management via `getAuthSession` server function
-- Auth context available in route context
-
-## File Structure
-
-```
-ui/
-├── src/
-│   ├── components/
-│   │   ├── ui/          # Shadcn components
-│   │   ├── layout/      # Layout components
-│   │   ├── home/        # Home page components
-│   │   ├── write/       # Write feature components
-│   │   └── Editor/      # Tiptap editor components
-│   ├── routes/          # TanStack Router file routes
-│   ├── lib/             # Utilities and clients
-│   ├── data/            # Server functions
-│   └── styles.css       # Global styles + Tailwind
-├── public/              # Static assets
-├── package.json
-├── tsconfig.json
-├── vite.config.ts
-├── eslint.config.js
-└── prettier.config.js
-```
-
-## Bun-Specific Guidelines
-
-- Use `bun` instead of `node`, `npm`, `yarn`, or `pnpm`
-- Bun automatically loads `.env` files (no dotenv needed)
-- Prefer Bun built-ins when available:
-  - `Bun.file` over `fs.readFile/writeFile`
-  - `bun:test` for testing
-  - `Bun.$` for shell commands
-
-## Editor Configuration
-
-The project uses Tiptap for the rich text editor with extensions:
-- StarterKit (headings limited to h2)
-- Placeholder, Image, Link, Blockquote
-- CodeBlockLowlight with syntax highlighting
-- Custom styling in `src/styles.css` under `.tiptap` selector
-
-## Environment Variables
-
-Client-side variables must be prefixed with `VITE_`:
-```typescript
-// src/env.ts
-VITE_APP_TITLE: z.string().min(1).optional()
-SERVER_URL: z.string().url().optional()
-```
+- **Cursor Rules:** Not present.
+- **Copilot Rules:** Not present.

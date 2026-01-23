@@ -28,7 +28,7 @@ MarkLink is built using a modern, robust, and scalable technology stack:
 
 ### Backend
 
-- **[NestJS](https://nestjs.com/)**: A progressive Node.js framework for building efficient and scalable server-side applications.
+- **[ElysiaJS](https://elysiajs.com)**: A progressive Node.js framework for building efficient and scalable server-side applications.
 - **[Drizzle ORM](https://orm.drizzle.team/)**: TypeScript-first Object Relational Mapper for maximum type safety.
 - **[PostgreSQL](https://www.postgresql.org/)**: Advanced open-source relational database.
 - **[Better Auth](https://better-auth.com/)**: Secure authentication solution.

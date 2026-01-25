@@ -115,6 +115,15 @@ Configuration is enforced via `.prettierrc` / `prettier.config.js`.
   - Use `t` from Elysia (which uses TypeBox/Zod) for request/response validation.
   - Example: `.post('/route', handler, { body: t.Object({ ... }) })`.
 
+- **Authentication (Better Auth):**
+  - Uses **Better Auth** library for authentication.
+  - **Database:** PostgreSQL with Drizzle ORM adapter.
+  - **Social Providers:** GitHub OAuth configured.
+  - **Auth Base URL:** `http://localhost:3000/api/v1/auth` (development).
+  - **Middleware:** `authMiddleware` provides `isAuth` macro for protected routes.
+  - **Session Management:** Automatic session handling via Better Auth.
+  - **Schema:** Located in `backend/src/db/schema/auth.ts` (user, session, account, verification tables).
+
 ## 4. Error Handling
 
 - **Frontend:**

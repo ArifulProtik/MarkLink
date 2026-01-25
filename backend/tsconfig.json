@@ -4,8 +4,14 @@
     "lib": [
       "ESNext"
     ],
+    "baseUrl": ".",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    },
     "allowImportingTsExtensions": true,
     "strict": true,
     "noUncheckedIndexedAccess": true,

@@ -8,6 +8,13 @@
       "when": 1769156284711,
       "tag": "0000_broken_iron_man",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1769402358346,
+      "tag": "0001_mighty_red_ghost",
+      "breakpoints": true
     }
   ]
 }

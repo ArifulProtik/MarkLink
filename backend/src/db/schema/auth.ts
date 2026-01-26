@@ -1,12 +1,14 @@
 import { relations } from "drizzle-orm"
 import { boolean, index, pgTable, text, timestamp } from "drizzle-orm/pg-core"
 import { v7 as uuidv7 } from "uuid"
+import { article, comment, like } from "./article.ts"
 
 export const user = pgTable("user", {
   id: text("id").primaryKey().$defaultFn(() => uuidv7()),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").default(false).notNull(),
+  username: text("username").notNull().unique(),
   image: text("image"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
@@ -77,6 +79,9 @@ export const verification = pgTable(
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
+  articles: many(article), // User has many articles
+  comments: many(comment), // User has many comments
+  likes: many(like),
 }))
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -92,3 +97,5 @@ export const accountRelations = relations(account, ({ one }) => ({
     references: [user.id],
   }),
 }))
+
+export type User = typeof user.$inferSelect

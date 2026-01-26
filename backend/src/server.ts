@@ -6,7 +6,7 @@ import { Elysia } from "elysia"
 import { Controller } from "./controllers/controller.ts"
 import { auth } from "./lib/auth.ts"
 import "./controllers/upload.controller.ts"
-import "./controllers/post.controller.ts"
+import "./controllers/article.controller.ts"
 
 export const app = new Elysia({
   prefix: "/api/v1",

@@ -3,7 +3,6 @@ import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import appCss from '../styles.css?url'
 import type { AuthContext } from '@/router'
-import { TrpcProvider } from '@/components/TrpcProvider'
 import { getAuthSession } from '@/data/server-auth'
 
 export const Route = createRootRoute({
@@ -47,7 +46,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body suppressHydrationWarning>
-        <TrpcProvider>{children}</TrpcProvider>
+        {children}
         <TanStackDevtools
           config={{
             position: 'bottom-right',

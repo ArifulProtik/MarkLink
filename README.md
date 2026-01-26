@@ -8,14 +8,14 @@ MarkLink is a comprehensive platform designed for writers and readers to engage 
 
 ### ✍️ Writing & Publishing
 
-- **Advanced Editor**: A powerful, notion-style editor based on Tiptap for a rich writing experience.
+- **Advanced Editor**: A powerful, notion-style editor based on **Tiptap** for a rich writing experience.
 - **Blogs & Books**: Support for both short-form blog posts and long-form book publishing.
 - **Drafts**: Save your work in progress and publish when ready.
 
 ### 🌐 Social Connectivity
 
 - **Moments**: Share short, social-media-style posts to engage with your audience instantly.
-- **Chat**: Real-time messaging to connect privately with other users and authors.
+- **Chat**: Real-time messaging to connect privately with other users and authors (Powered by Redis).
 - **Follow System**: Build your network by following favorite authors and creators to stay updated with their latest work.
 
 ### 🔗 Sharing
@@ -28,19 +28,20 @@ MarkLink is built using a modern, robust, and scalable technology stack:
 
 ### Backend
 
-- **[ElysiaJS](https://elysiajs.com)**: A progressive Node.js framework for building efficient and scalable server-side applications.
+- **[ElysiaJS](https://elysiajs.com)**: A fast and typesafe web framework for Bun.
 - **[Drizzle ORM](https://orm.drizzle.team/)**: TypeScript-first Object Relational Mapper for maximum type safety.
 - **[PostgreSQL](https://www.postgresql.org/)**: Advanced open-source relational database.
-- **[Better Auth](https://better-auth.com/)**: Secure authentication solution.
-- **[tRPC](https://trpc.io/)**: End-to-end typesafe APIs.
+- **[Better Auth](https://better-auth.com/)**: Secure authentication solution with GitHub social login.
+- **[Redis](https://redis.io/)**: In-memory data structure store for real-time features.
+- **[Cloudinary](https://cloudinary.com/)**: Cloud-based image and video management.
 
 ### Frontend
 
-- **[React](https://react.dev/)**: The library for web and native user interfaces.
-- **[TanStack Start](https://tanstack.com/start)**: Full-stack React framework.
+- **[React 19](https://react.dev/)**: The latest version of the popular library for user interfaces.
+- **[TanStack Start](https://tanstack.com/start)**: Full-stack React framework for SSR and type-safety.
 - **[TanStack Router](https://tanstack.com/router)**: Type-safe routing for React applications.
 - **[TanStack Query](https://tanstack.com/query)**: Powerful asynchronous state management.
-- **[Tailwind CSS](https://tailwindcss.com/)**: A utility-first CSS framework for rapid UI development.
+- **[Tailwind CSS 4.0](https://tailwindcss.com/)**: A utility-first CSS framework for rapid UI development.
 - **[Shadcn UI](https://ui.shadcn.com/)**: Beautifully designed components built with Radix UI and Tailwind CSS.
 - **[Bun](https://bun.sh/)**: Fast all-in-one JavaScript runtime and package manager.
 
@@ -53,96 +54,104 @@ Follow these instructions to set up the project locally.
 Ensure you have the following installed on your machine:
 
 - **[Bun](https://bun.sh/)** (v1.x or higher)
-- **Node.js** (v20 or higher - though Bun is the primary runtime)
 - **PostgreSQL** (running locally or a cloud instance)
+- **Redis** (running locally or a cloud instance)
 
 ### Installation
 
-1. **Clone the repository** (if not already done):
+1. **Clone the repository**:
 
    ```bash
    git clone <repository-url>
    cd marklink
    ```
 
-2. **Install dependencies** for the root workspace:
+2. **Install dependencies** for both Backend and UI:
 
    ```bash
+   # Install Backend dependencies
+   cd backend
    bun install
-   ```
-
-3. **Install dependencies** for the frontend:
-   ```bash
-   cd ui
+   
+   # Install UI dependencies
+   cd ../ui
    bun install
-   cd ..
    ```
 
 ### Environment Setup
 
 1. **Backend Environment**:
-   Duplicate the `.env.example` file (if available) or create a `.env` file in the root directory:
+   Create a `.env` file in the `backend` directory:
 
    ```bash
-   cp .env.example .env
+   cd backend
+   touch .env
    ```
 
-   _Make sure to update `DATABASE_URL` and other secrets._
+   Add the following variables:
+   ```env
+   DATABASE_URL=postgres://user:password@localhost:5432/marklink
+   REDIS_HOST=localhost
+   GITHUB_CLIENT_ID=your_github_client_id
+   GITHUB_CLIENT_SECRET=your_github_client_secret
+   UI_CLIENT_URL=http://localhost:3001
+   CLOUDINARY_URL=your_cloudinary_url
+   ```
 
 2. **Frontend Environment**:
-   Create a `.env.local` file in the `ui` directory:
+   Create a `.env` file in the `ui` directory:
    ```bash
-   cp ui/.env.example ui/.env.local
+   cd ../ui
+   touch .env
+   ```
+   Add the following variables:
+   ```env
+   VITE_SERVER_URL=http://localhost:3000
    ```
 
 ### Database Setup
 
-Use Drizzle Kit to push the schema to your database:
+Navigate to the `backend` directory and use Drizzle Kit to push the schema:
 
 ```bash
-bun run db:push
+cd backend
+bun run push
 ```
 
 ### Running the Project
 
-You can run the backend and frontend separately.
+You need to run the backend and frontend separately.
 
 #### 1. Backend (API)
 
-Start the NestJS server in development mode:
-
 ```bash
-bun run start:dev
+cd backend
+bun run dev
 ```
 
-The server will typically run on `http://localhost:3000`.
+The server will run on `http://localhost:3000`. Documentation (Scalar) is available at `http://localhost:3000/api/v1/reference`.
 
 #### 2. Frontend (UI)
 
-Open a new terminal window, navigate to the `ui` directory (if you want to run it directly from there) or use the root script if configured. Assuming you run it from the root specifically for the UI workspace:
-
 ```bash
-bun run ui:dev
+cd ui
+bun run dev
 ```
 
-_Note: Make sure you have a script `ui:dev` effectively running `cd ui && bun run dev` or navigate to `ui` and run `bun run dev`._
-
-The frontend will be available at `http://localhost:3001` (or the port specified in your Vite config).
+The frontend will be available at `http://localhost:3001`.
 
 ## Project Structure
 
 ```
 marklink/
-├── src/            # Backend (NestJS) source code
-│   ├── app.module.ts
+├── backend/        # ElysiaJS Backend
+│   ├── src/        # Source code
+│   ├── drizzle/    # Database migrations
 │   └── ...
-├── ui/             # Frontend (React + TanStack) source code
-│   ├── src/
-│   │   ├── routes/
-│   │   ├── components/
-│   │   └── ...
-├── drizzle/        # Database schema and migrations
-├── package.json    # Root scripts and dependencies
+├── ui/             # TanStack Start Frontend
+│   ├── src/        # Source code
+│   ├── public/     # Static assets
+│   └── ...
 └── README.md       # Project documentation
 ```
 

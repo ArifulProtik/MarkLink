@@ -1,5 +1,10 @@
 import { relations } from "drizzle-orm"
-import { index, pgTable, text, uniqueIndex } from "drizzle-orm/pg-core"
+import {
+  index,
+  pgTable,
+  text,
+  uniqueIndex,
+} from "drizzle-orm/pg-core"
 import { user } from "./auth.ts"
 import { baseColumns } from "./base.ts"
 

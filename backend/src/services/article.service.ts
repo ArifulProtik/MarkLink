@@ -1,10 +1,25 @@
 import type { User } from "better-auth"
-import type { CreatePostBodyT, GetPostsQueryT, UpdatePostBodyT } from "@/shared/article.model.ts"
-import { desc, eq, sql } from "drizzle-orm"
+import type {
+  CreatePostBodyT,
+  GetPostsQueryT,
+  UpdatePostBodyT,
+} from "@/shared/article.model.ts"
+import {
+  count,
+  desc,
+  eq,
+  getTableColumns,
+  sql,
+} from "drizzle-orm"
 import { v7 as uuidv7 } from "uuid"
 import { db } from "@/db/index.ts"
-import { article } from "@/db/schema/article.ts"
-import { ForbiddenError, InternalServerError, NotFoundError } from "./error.service.ts"
+import { article, like } from "@/db/schema/article.ts"
+import { user as userSchema } from "@/db/schema/auth.ts"
+import {
+  ForbiddenError,
+  InternalServerError,
+  NotFoundError,
+} from "./error.service.ts"
 
 const GenerateSlug = (title: string) => {
   return title
@@ -37,7 +52,10 @@ export const CreatePost = async (body: CreatePostBodyT, user: User) => {
         },
       },
     })
-    return result
+    return {
+      ...result,
+      likesCount: 0,
+    }
   }
   catch (error) {
     throw new InternalServerError("Failed to create post", error)
@@ -46,21 +64,24 @@ export const CreatePost = async (body: CreatePostBodyT, user: User) => {
 
 export const GetPosts = async (query: GetPostsQueryT) => {
   try {
-    const data = await db.query.article.findMany({
-      limit: query.limit,
-      offset: query.offset,
-      orderBy: [desc(article.createdAt)],
-      with: {
+    const data = await db
+      .select({
+        ...getTableColumns(article),
         author: {
-          columns: {
-            id: true,
-            name: true,
-            image: true,
-            username: true,
-          },
+          id: userSchema.id,
+          name: userSchema.name,
+          image: userSchema.image,
+          username: userSchema.username,
         },
-      },
-    })
+        likesCount: count(like.id),
+      })
+      .from(article)
+      .leftJoin(userSchema, eq(article.author_id, userSchema.id))
+      .leftJoin(like, eq(article.id, like.article_id))
+      .groupBy(article.id, userSchema.id)
+      .limit(query.limit)
+      .offset(query.offset)
+      .orderBy(desc(article.createdAt))
 
     const [total] = await db.select({ count: sql<number>`count(*)` }).from(article)
 
@@ -78,19 +99,22 @@ export const GetPosts = async (query: GetPostsQueryT) => {
 
 export const GetPostBySlug = async (slug: string) => {
   try {
-    const post = await db.query.article.findFirst({
-      where: eq(article.slug, slug),
-      with: {
+    const [post] = await db
+      .select({
+        ...getTableColumns(article),
         author: {
-          columns: {
-            id: true,
-            name: true,
-            image: true,
-            username: true,
-          },
+          id: userSchema.id,
+          name: userSchema.name,
+          image: userSchema.image,
+          username: userSchema.username,
         },
-      },
-    })
+        likesCount: count(like.id),
+      })
+      .from(article)
+      .leftJoin(userSchema, eq(article.author_id, userSchema.id))
+      .leftJoin(like, eq(article.id, like.article_id))
+      .where(eq(article.slug, slug))
+      .groupBy(article.id, userSchema.id)
 
     if (!post) {
       throw new NotFoundError("Article not found")

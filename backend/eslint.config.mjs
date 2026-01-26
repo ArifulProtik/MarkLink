@@ -18,6 +18,10 @@ export default antfu(
       // Or potentially use the stylistic rule if it's managed there
       "antfu/top-level-function": "off",
       // "style/newlice-per-chained-call": ["error", { ignoreChainWithDepth: 2 }],
+      "style/object-curly-newline": ["error", {
+        ImportDeclaration: { multiline: true, minProperties: 3 },
+        ExportDeclaration: { multiline: true, minProperties: 3 },
+      }],
     },
     plugins: {
       drizzle,

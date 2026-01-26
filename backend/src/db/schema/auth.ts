@@ -1,7 +1,17 @@
 import { relations } from "drizzle-orm"
-import { boolean, index, pgTable, text, timestamp } from "drizzle-orm/pg-core"
+import {
+  boolean,
+  index,
+  pgTable,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core"
 import { v7 as uuidv7 } from "uuid"
-import { article, comment, like } from "./article.ts"
+import {
+  article,
+  comment,
+  like,
+} from "./article.ts"
 
 export const user = pgTable("user", {
   id: text("id").primaryKey().$defaultFn(() => uuidv7()),

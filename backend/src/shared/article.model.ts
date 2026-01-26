@@ -14,6 +14,7 @@ export type AuthorT = z.infer<typeof AuthorSchema>
 
 export const ArticleSchema = createSelectSchema(article).extend({
   author: AuthorSchema,
+  likesCount: z.number(),
 })
 
 export type ArticleT = z.infer<typeof ArticleSchema>

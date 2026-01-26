@@ -7,6 +7,8 @@ import { Controller } from "./controllers/controller.ts"
 import { auth } from "./lib/auth.ts"
 import "./controllers/upload.controller.ts"
 import "./controllers/article.controller.ts"
+import "./controllers/comment.controller.ts"
+import "./controllers/like.controller.ts"
 
 export const app = new Elysia({
   prefix: "/api/v1",

@@ -1,5 +1,15 @@
-import { CreatePost, DeletePost, GetPostBySlug, GetPosts, UpdatePost } from "@/services/article.service.ts"
-import { CreatePostBody, GetPostsQuery, UpdatePostBody } from "@/shared/article.model.ts"
+import {
+  CreatePost,
+  DeletePost,
+  GetPostBySlug,
+  GetPosts,
+  UpdatePost,
+} from "@/services/article.service.ts"
+import {
+  CreatePostBody,
+  GetPostsQuery,
+  UpdatePostBody,
+} from "@/shared/article.model.ts"
 import { Controller } from "./controller.ts"
 
 Controller.group("/article", (p) => {

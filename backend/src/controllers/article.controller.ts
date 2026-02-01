@@ -1,19 +1,21 @@
+import { authMiddleware } from "@backend/middlewares/auth.middleware.ts"
 import {
   CreatePost,
   DeletePost,
   GetPostBySlug,
   GetPosts,
   UpdatePost,
-} from "@/services/article.service.ts"
+} from "@backend/services/article.service.ts"
 import {
   CreatePostBody,
   GetPostsQuery,
   UpdatePostBody,
-} from "@/shared/article.model.ts"
-import { Controller } from "./controller.ts"
+} from "@backend/shared/article.model.ts"
+import { Elysia } from "elysia"
 
-Controller.group("/article", (p) => {
-  p.post(
+export const articleController = new Elysia({ prefix: "/article" })
+  .use(authMiddleware)
+  .post(
     "/",
     async ({ body, user }) => await CreatePost(body, user),
     {
@@ -21,14 +23,11 @@ Controller.group("/article", (p) => {
       isAuth: true,
     },
   )
-
-  p.get("/", async ({ query }) => await GetPosts(query), {
+  .get("/", async ({ query }) => await GetPosts(query), {
     query: GetPostsQuery,
   })
-
-  p.get("/:slug", async ({ params: { slug } }) => await GetPostBySlug(slug))
-
-  p.put(
+  .get("/:slug", async ({ params: { slug } }) => await GetPostBySlug(slug))
+  .put(
     "/:id",
     async ({ params: { id }, body, user }) => await UpdatePost(id, body, user),
     {
@@ -36,14 +35,10 @@ Controller.group("/article", (p) => {
       isAuth: true,
     },
   )
-
-  p.delete(
+  .delete(
     "/:id",
     async ({ params: { id }, user }) => await DeletePost(id, user),
     {
       isAuth: true,
     },
   )
-
-  return p
-})

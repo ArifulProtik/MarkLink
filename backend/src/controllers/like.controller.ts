@@ -1,9 +1,11 @@
-import { ToggleLike } from "@/services/like.service.ts"
-import { ToggleLikeBody } from "@/shared/like.model.ts"
-import { Controller } from "./controller.ts"
+import { authMiddleware } from "@backend/middlewares/auth.middleware.ts"
+import { ToggleLike } from "@backend/services/like.service.ts"
+import { ToggleLikeBody } from "@backend/shared/like.model.ts"
+import { Elysia } from "elysia"
 
-Controller.group("/like", (p) => {
-  p.post(
+export const likeController = new Elysia({ prefix: "/like" })
+  .use(authMiddleware)
+  .post(
     "/",
     async ({ body, user }) => await ToggleLike(body, user),
     {
@@ -11,6 +13,3 @@ Controller.group("/like", (p) => {
       isAuth: true,
     },
   )
-
-  return p
-})

@@ -6,6 +6,7 @@ import {
   UserAccountIcon,
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
+import { authClient } from '@ui/lib/auth-client'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import {
   DropdownMenu,
@@ -17,7 +18,6 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
 import type { User } from 'better-auth'
-import { authClient } from '@/lib/auth-client'
 
 type AvaterBtnProps = {
   User: User

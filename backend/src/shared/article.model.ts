@@ -1,7 +1,7 @@
+import { article } from "@backend/db/schema/article.ts"
+import { user } from "@backend/db/schema/auth.ts"
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 import { z } from "zod"
-import { article } from "@/db/schema/article.ts"
-import { user } from "@/db/schema/auth.ts"
 
 export const AuthorSchema = createSelectSchema(user).pick({
   id: true,

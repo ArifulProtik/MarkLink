@@ -1,9 +1,9 @@
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
+import { getAuthSession } from '@ui/data/server-auth'
 import appCss from '../styles.css?url'
-import type { AuthContext } from '@/router'
-import { getAuthSession } from '@/data/server-auth'
+import type { AuthContext } from '@ui/router'
 
 export const Route = createRootRoute({
   beforeLoad: async () => {

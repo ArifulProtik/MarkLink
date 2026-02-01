@@ -1,42 +1,38 @@
+import { authMiddleware } from "@backend/middlewares/auth.middleware.ts"
 import {
   CreateComment,
   DeleteComment,
   GetComments,
   UpdateComment,
-} from "@/services/comment.service.ts"
+} from "@backend/services/comment.service.ts"
 import {
   CreateCommentBody,
   GetCommentsQuery,
   UpdateCommentBody,
-} from "@/shared/comment.model.ts"
-import { Controller } from "./controller.ts"
+} from "@backend/shared/comment.model.ts"
+import { Elysia } from "elysia"
 
-Controller.group("/comments", (app) => {
-  app.post("/", async ({ body, user }) => {
+export const commentController = new Elysia({ prefix: "/comments" })
+  .use(authMiddleware)
+  .post("/", async ({ body, user }) => {
     return await CreateComment(body, user)
   }, {
     body: CreateCommentBody,
     isAuth: true,
   })
-
-  app.get("/:articleId", async ({ params: { articleId }, query }) => {
+  .get("/:articleId", async ({ params: { articleId }, query }) => {
     return await GetComments(articleId, query)
   }, {
     query: GetCommentsQuery,
   })
-
-  app.patch("/:id", async ({ params: { id }, body, user }) => {
+  .patch("/:id", async ({ params: { id }, body, user }) => {
     return await UpdateComment(id, body, user)
   }, {
     body: UpdateCommentBody,
     isAuth: true,
   })
-
-  app.delete("/:id", async ({ params: { id }, user }) => {
+  .delete("/:id", async ({ params: { id }, user }) => {
     return await DeleteComment(id, user)
   }, {
     isAuth: true,
   })
-
-  return app
-})

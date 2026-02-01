@@ -1,5 +1,5 @@
+import { config } from "@backend/config.ts"
 import { v2 as cloudinary } from "cloudinary"
-import { config } from "@/config.ts"
 
 if (config.CLOUDINARY_URL) {
   // Use the URL directly if possible, or parse it for explicit config

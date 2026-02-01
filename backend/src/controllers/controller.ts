@@ -1,8 +1,9 @@
+import { HttpError, SetupOnErorr } from "@backend/services/error.service.ts"
 import { Elysia } from "elysia"
-import { authMiddleware } from "@/middlewares/auth.middleware.ts"
-import { HttpError, SetupOnErorr } from "@/services/error.service.ts"
 
-export const Controller = new Elysia()
+// Base controller with error handling - for reference only
+// Controllers now directly use authMiddleware
+export const baseErrorHandler = new Elysia()
   .error({
     HttpError,
   })
@@ -12,4 +13,3 @@ export const Controller = new Elysia()
         return SetupOnErorr(error, set)
     }
   })
-  .use(authMiddleware)

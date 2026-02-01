@@ -1,6 +1,6 @@
+import { comment } from "@backend/db/schema/article.ts"
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 import { z } from "zod"
-import { comment } from "@/db/schema/article.ts"
 import { AuthorSchema } from "./article.model.ts"
 
 export const CommentSchema = createSelectSchema(comment).extend({

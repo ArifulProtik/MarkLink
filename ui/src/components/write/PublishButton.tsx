@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Cancel01Icon } from '@hugeicons/core-free-icons'
+import { Button } from '@ui/components/ui/button'
+import { Dialog, DialogContent, DialogTrigger } from '@ui/components/ui/dialog'
+import { Input } from '@ui/components/ui/input'
+import { Badge } from '@ui/components/ui/badge'
 import type { ChangeEvent, KeyboardEvent } from 'react'
-import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
 
 type PublishButtonProps = {
   onClick?: () => void

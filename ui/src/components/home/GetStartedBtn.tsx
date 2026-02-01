@@ -1,6 +1,5 @@
 import { HugeiconsIcon } from '@hugeicons/react'
 import { GithubIcon } from '@hugeicons/core-free-icons'
-import { Button } from '../ui/button'
 import {
   Dialog,
   DialogContent,
@@ -9,8 +8,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { authClient } from '@/lib/auth-client'
+} from '@ui/components/ui/dialog'
+import { authClient } from '@ui/lib/auth-client'
+import { Button } from '../ui/button'
 
 export function GetStartedBtn() {
   const handleSignIn = async () => {

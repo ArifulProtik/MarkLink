@@ -1,16 +1,16 @@
-import type { User } from "better-auth"
 import type {
   CreateCommentBodyT,
   GetCommentsQueryT,
   UpdateCommentBodyT,
-} from "@/shared/comment.model.ts"
+} from "@backend/shared/comment.model.ts"
+import type { User } from "better-auth"
+import { db } from "@backend/db/index.ts"
+import { comment } from "@backend/db/schema/article.ts"
 import {
   desc,
   eq,
   sql,
 } from "drizzle-orm"
-import { db } from "@/db/index.ts"
-import { comment } from "@/db/schema/article.ts"
 import {
   ForbiddenError,
   InternalServerError,

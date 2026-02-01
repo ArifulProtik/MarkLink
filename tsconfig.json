@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "skipLibCheck": true
+  },
+  "include": [
+    "backend/src/**/*",
+    "ui/src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/node_modules"
+  ]
+}

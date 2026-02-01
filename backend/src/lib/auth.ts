@@ -1,8 +1,8 @@
+import { config } from "@backend/config.ts"
+import { db } from "@backend/db/index.ts"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { nanoid } from "nanoid"
-import { config } from "@/config.ts"
-import { db } from "@/db/index.ts"
 
 export const auth = betterAuth({
   database: drizzleAdapter(

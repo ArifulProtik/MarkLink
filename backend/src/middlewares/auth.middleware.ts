@@ -1,7 +1,7 @@
 import type { User } from "better-auth"
+import { auth } from "@backend/lib/auth.ts"
+import { UnauthorizedError } from "@backend/services/error.service.ts"
 import { Elysia } from "elysia"
-import { auth } from "@/lib/auth.ts"
-import { UnauthorizedError } from "@/services/error.service.ts"
 
 export const authMiddleware = new Elysia()
 

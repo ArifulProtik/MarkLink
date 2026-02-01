@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { WriteComponent } from '@/components/write/WriteComponent'
+import { WriteComponent } from '@ui/components/write/WriteComponent'
 
 export const Route = createFileRoute('/write')({
   component: RouteComponent,

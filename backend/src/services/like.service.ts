@@ -1,8 +1,8 @@
+import type { ToggleLikeBodyT } from "@backend/shared/like.model.ts"
 import type { User } from "better-auth"
-import type { ToggleLikeBodyT } from "@/shared/like.model.ts"
+import { db } from "@backend/db/index.ts"
+import { article, like } from "@backend/db/schema/article.ts"
 import { and, eq } from "drizzle-orm"
-import { db } from "@/db/index.ts"
-import { article, like } from "@/db/schema/article.ts"
 import { InternalServerError, NotFoundError } from "./error.service.ts"
 
 export const ToggleLike = async (body: ToggleLikeBodyT, user: User) => {

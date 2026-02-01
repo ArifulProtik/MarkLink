@@ -1,9 +1,12 @@
-import type { User } from "better-auth"
 import type {
   CreatePostBodyT,
   GetPostsQueryT,
   UpdatePostBodyT,
-} from "@/shared/article.model.ts"
+} from "@backend/shared/article.model.ts"
+import type { User } from "better-auth"
+import { db } from "@backend/db/index.ts"
+import { article, like } from "@backend/db/schema/article.ts"
+import { user as userSchema } from "@backend/db/schema/auth.ts"
 import {
   count,
   desc,
@@ -12,9 +15,6 @@ import {
   sql,
 } from "drizzle-orm"
 import { v7 as uuidv7 } from "uuid"
-import { db } from "@/db/index.ts"
-import { article, like } from "@/db/schema/article.ts"
-import { user as userSchema } from "@/db/schema/auth.ts"
 import {
   ForbiddenError,
   InternalServerError,

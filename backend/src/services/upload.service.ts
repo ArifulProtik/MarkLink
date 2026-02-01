@@ -1,5 +1,5 @@
 /* eslint-disable node/prefer-global/buffer */
-import { cloudinary } from "@/lib/cloudinary.ts"
+import { cloudinary } from "@backend/lib/cloudinary.ts"
 import { InternalServerError } from "./error.service.ts"
 
 export const ImageUploadService = async (file: File) => {

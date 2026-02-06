@@ -5,6 +5,7 @@ import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { getAuthSession } from '@ui/data/server-auth'
 import { useState } from 'react'
+import { Toaster } from '@ui/components/ui/sonner'
 import appCss from '../styles.css?url'
 import type { AuthContext } from '@ui/router'
 
@@ -69,6 +70,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             ]}
           />
         </QueryClientProvider>
+        <Toaster />
         <Scripts />
       </body>
     </html>

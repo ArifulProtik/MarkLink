@@ -1,10 +1,39 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
+import { z } from 'zod'
 import { Button } from '@ui/components/ui/button'
 import { Dialog, DialogContent, DialogTrigger } from '@ui/components/ui/dialog'
 import { Input } from '@ui/components/ui/input'
 import { TagInput } from '@ui/components/shared/TagInput'
 import { useUploadImage } from '@ui/hooks/use-upload-image'
+import { Textarea } from '@ui/components/ui/textarea'
+import { useMutation } from '@tanstack/react-query'
+import { api } from '@ui/lib/api'
+import { useRouter } from '@tanstack/react-router'
+import { toast } from 'sonner'
 import { ImageUpload } from './ImageUpload'
+
+const MAX_PREVIEW_LENGTH = 150
+
+type PublishData = z.infer<typeof publishSchema>
+
+const publishSchema = z.object({
+  title: z.string().min(1, 'Title is required'),
+  preview_image: z.preprocess(
+    (val) => (val === null ? '' : val),
+    z.string().min(1, 'Preview image is required'),
+  ),
+  preview_text: z
+    .string()
+    .min(1, 'Preview text is required')
+    .max(
+      MAX_PREVIEW_LENGTH,
+      `Preview text must be ${MAX_PREVIEW_LENGTH} characters or less`,
+    ),
+  content: z.string().min(1, 'Content is required'),
+  tags: z
+    .array(z.string().min(3, 'Tag cannot be empty'))
+    .min(1, 'At least one tag is required'),
+})
 
 type PublishButtonProps = {
   title: string
@@ -24,8 +53,29 @@ export function PublishButton({ title, content }: PublishButtonProps) {
   const [previewText, setPreviewText] = useState('')
   const [tags, setTags] = useState<Array<string>>([])
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null)
+  const [errors, setErrors] = useState<Array<string>>([])
+  const previewTextRef = useRef<HTMLTextAreaElement>(null)
+  const router = useRouter()
 
   const { mutate: uploadImage, isPending: isUploading } = useUploadImage()
+
+  const validateForm = useCallback((): PublishData | null => {
+    const result = publishSchema.safeParse({
+      title: previewTitle,
+      preview_image: previewImageUrl,
+      preview_text: previewText,
+      content: content || '',
+      tags: tags,
+    })
+
+    if (!result.success) {
+      setErrors(result.error.issues.map((issue) => issue.message))
+      return null
+    }
+
+    setErrors([])
+    return result.data
+  }, [previewTitle, previewImageUrl, previewText, content, tags])
 
   const handleOpenChange = useCallback(
     (open: boolean) => {
@@ -46,8 +96,8 @@ export function PublishButton({ title, content }: PublishButtonProps) {
         onSuccess: (url) => {
           setPreviewImageUrl(url)
         },
-        onError: (error) => {
-          console.error('Failed to upload image:', error)
+        onError: () => {
+          toast.error('Failed to upload image')
         },
       })
     },
@@ -58,6 +108,20 @@ export function PublishButton({ title, content }: PublishButtonProps) {
     () => title === '' || isContentEmpty(content),
     [title, content],
   )
+
+  const { mutate: publishStory, isPending: isPublishing } = useMutation({
+    mutationFn: async (data: PublishData) => {
+      const { data: res, error } = await api.api.v1.article.post(data)
+      if (error) throw error
+      return res
+    },
+    onError: () => {
+      toast.error('Failed to publish story:')
+    },
+    onSuccess: (mydata) => {
+      router.navigate({ to: `/article/${mydata.slug}` })
+    },
+  })
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
@@ -83,10 +147,19 @@ export function PublishButton({ title, content }: PublishButtonProps) {
                 placeholder="Title"
                 className="text-lg font-bold"
               />
-              <Input
+              <Textarea
+                ref={previewTextRef}
                 value={previewText}
+                maxLength={MAX_PREVIEW_LENGTH}
                 onChange={(e) => setPreviewText(e.target.value)}
+                onInput={(e) => {
+                  const target = e.target as HTMLTextAreaElement
+                  target.style.height = 'auto'
+                  target.style.height = `${Math.min(target.scrollHeight, 72)}px`
+                }}
                 placeholder="Write a preview description..."
+                rows={1}
+                className="min-h-9 max-h-18 resize-none overflow-hidden"
               />
             </div>
 
@@ -117,8 +190,30 @@ export function PublishButton({ title, content }: PublishButtonProps) {
 
             <div className="flex-1" />
 
+            {errors.length > 0 && (
+              <div className="text-destructive text-xs space-y-1">
+                {errors.map((error, index) => (
+                  <p key={index}>{error}</p>
+                ))}
+              </div>
+            )}
+
             <div className="flex flex-row items-center gap-4 pt-4">
-              <Button>Publish now</Button>
+              <Button
+                disabled={isPublishing}
+                onClick={() => {
+                  const formData = validateForm()
+                  if (formData) {
+                    publishStory(formData)
+                  }
+                }}
+              >
+                {isPublishing ? (
+                  <span className="animate-spin" />
+                ) : (
+                  'Publish now'
+                )}
+              </Button>
               <Button disabled variant="secondary">
                 Save as draft
               </Button>

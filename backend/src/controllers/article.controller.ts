@@ -26,7 +26,9 @@ export const articleController = new Elysia({ prefix: '/article' })
   .get('/', async ({ query }) => await GetPosts(query), {
     query: GetPostsQuery,
   })
-  .get('/:slug', async ({ params: { slug } }) => await GetPostBySlug(slug))
+  .get('/:slug', async ({ params: { slug }, user }) => await GetPostBySlug(slug, user), {
+    isAuthOptional: true,
+  })
   .put(
     '/:id',
     async ({ params: { id }, body, user }) => await UpdatePost(id, body, user),

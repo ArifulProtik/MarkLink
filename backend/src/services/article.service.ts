@@ -8,6 +8,7 @@ import { db } from '@backend/db/index.ts'
 import { article, like } from '@backend/db/schema/article.ts'
 import { user as userSchema } from '@backend/db/schema/auth.ts'
 import {
+  and,
   count,
   desc,
   eq,
@@ -102,7 +103,7 @@ export const GetPosts = async (query: GetPostsQueryT) => {
   }
 }
 
-export const GetPostBySlug = async (slug: string) => {
+export const GetPostBySlug = async (slug: string, user: User | null) => {
   try {
     const [post] = await db
       .select({
@@ -125,7 +126,24 @@ export const GetPostBySlug = async (slug: string) => {
       throw new NotFoundError('Article not found')
     }
 
-    return post
+    let isLikedByUser = false
+    if (user) {
+      const [existingLike] = await db
+        .select()
+        .from(like)
+        .where(and(
+          eq(like.article_id, post.id),
+          eq(like.liker_id, user.id),
+        ))
+      if (existingLike) {
+        isLikedByUser = true
+      }
+    }
+
+    return {
+      ...post,
+      isLikedByUser,
+    }
   }
   catch (error) {
     if (error instanceof NotFoundError) {

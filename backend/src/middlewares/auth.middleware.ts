@@ -25,4 +25,18 @@ export const authMiddleware = new Elysia()
         )
       },
     },
+
+    isAuthOptional: {
+      async resolve({ headers }) {
+        const session = await auth.api.getSession({ headers })
+        if (session) {
+          return {
+            user: session.user,
+          }
+        }
+        return {
+          user: null,
+        }
+      },
+    },
   })

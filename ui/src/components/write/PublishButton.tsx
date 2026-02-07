@@ -13,6 +13,7 @@ import { toast } from 'sonner'
 import { ImageUpload } from './ImageUpload'
 
 const MAX_PREVIEW_LENGTH = 150
+const MAX_TAGS = 5
 
 type PublishData = z.infer<typeof publishSchema>
 
@@ -31,16 +32,15 @@ const publishSchema = z.object({
     ),
   content: z.string().min(1, 'Content is required'),
   tags: z
-    .array(z.string().min(3, 'Tag cannot be empty'))
-    .min(1, 'At least one tag is required'),
+    .array(z.string().min(3, 'Tag must be at least 3 characters'))
+    .min(1, 'At least one tag is required')
+    .max(MAX_TAGS, `No more than ${MAX_TAGS} tags allowed`),
 })
 
 type PublishButtonProps = {
   title: string
   content: string | undefined
 }
-
-const MAX_TAGS = 5
 
 function isContentEmpty(content: string | undefined): boolean {
   if (!content) return true
@@ -85,6 +85,7 @@ export function PublishButton({ title, content }: PublishButtonProps) {
         setPreviewText('')
         setTags([])
         setPreviewImageUrl(null)
+        setErrors([])
       }
     },
     [title],
@@ -116,7 +117,7 @@ export function PublishButton({ title, content }: PublishButtonProps) {
       return res
     },
     onError: () => {
-      toast.error('Failed to publish story:')
+      toast.error('Failed to publish story')
     },
     onSuccess: (mydata) => {
       router.navigate({ to: `/article/${mydata.slug}` })
@@ -165,8 +166,8 @@ export function PublishButton({ title, content }: PublishButtonProps) {
 
             <p className="text-xs text-muted-foreground pt-2">
               Note: Changes here will affect how your story appears in public
-              places like Medium&apos;s homepage and in subscribers&apos;
-              inboxes — not the contents of the story itself.
+              places like the Marklink homepage and in subscribers&apos; inboxes
+              — not the contents of the story itself.
             </p>
           </div>
 
@@ -209,7 +210,11 @@ export function PublishButton({ title, content }: PublishButtonProps) {
                 }}
               >
                 {isPublishing ? (
-                  <span className="animate-spin" />
+                  <div
+                    className="size-4 border-2 border-current
+                      border-t-transparent rounded-full animate-spin"
+                    aria-hidden="true"
+                  />
                 ) : (
                   'Publish now'
                 )}

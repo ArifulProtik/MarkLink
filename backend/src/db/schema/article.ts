@@ -15,7 +15,7 @@ export const article = pgTable("article", {
   preview_text: text("preview_text").notNull(),
   content: text("content").notNull(),
   slug: text("slug").notNull().unique(),
-  tags: text("tags").array().notNull(),
+  tags: text("tags").array().notNull().default([]),
   author_id: text("author_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),

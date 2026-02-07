@@ -3,16 +3,19 @@ import EditorComponent from '../Editor/Editor'
 import { useArticleEditor } from '../Editor/use-editor'
 import { TitileInput } from './TitileInput'
 import { WriteNavbar } from './WriteNavbar'
-import type { Editor } from '@tiptap/react'
 
 export function WriteComponent() {
   const [title, setTitle] = React.useState('')
   const [content, setContent] = React.useState('')
-  const editor: Editor = useArticleEditor({
+  const editor = useArticleEditor({
     onUpdate: ({ editor: editorInstance }) => {
       setContent(editorInstance.getHTML())
     },
   })
+
+  if (!editor) {
+    return null
+  }
 
   return (
     <div className="min-h-screen bg-background pb-20">

@@ -3,10 +3,8 @@ import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
 import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
-import Blockquote from '@tiptap/extension-blockquote'
 import { common, createLowlight } from 'lowlight'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
-import Code from '@tiptap/extension-code'
 import type { Editor } from '@tiptap/react'
 
 const lowlight = createLowlight(common)
@@ -21,7 +19,7 @@ export const useArticleEditor = ({
   content = '',
   editable = true,
   onUpdate,
-}: UseArticleEditorProps = {}): Editor => {
+}: UseArticleEditorProps = {}): Editor | null => {
   return useEditor({
     editable,
     content,
@@ -31,6 +29,9 @@ export const useArticleEditor = ({
         heading: {
           levels: [2],
         },
+        blockquote: false,
+        code: false,
+        codeBlock: false,
       }),
       Placeholder.configure({
         placeholder: 'Tell your story...',
@@ -43,14 +44,8 @@ export const useArticleEditor = ({
           spellcheck: false,
         },
       }),
-      Blockquote,
       CodeBlockLowlight.configure({
         lowlight,
-        HTMLAttributes: {
-          spellcheck: 'false',
-        },
-      }),
-      Code.configure({
         HTMLAttributes: {
           spellcheck: 'false',
         },

@@ -25,14 +25,29 @@ export function ImageUpload({
       const file = event.target.files?.[0]
       if (file) {
         onFileSelect(file)
+        event.currentTarget.value = ''
       }
     },
     [onFileSelect],
   )
 
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault()
+        handleClick()
+      }
+    },
+    [handleClick],
+  )
+
   return (
     <div
+      role="button"
+      tabIndex={0}
       onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      aria-label="Upload image"
       className="w-full aspect-video bg-muted flex items-center justify-center
         text-center p-6 cursor-pointer hover:bg-muted/80 transition-colors
         rounded-md overflow-hidden relative"

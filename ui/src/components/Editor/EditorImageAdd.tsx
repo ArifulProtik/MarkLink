@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { ImageAdd02Icon } from '@hugeicons/core-free-icons'
 import { useUploadImage } from '@ui/hooks/use-upload-image'
+import { toast } from 'sonner'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog'
 import { Button } from '../ui/button'
 import type { Editor } from '@tiptap/react'
@@ -32,7 +33,7 @@ export function EditorImageAdd({
         },
         onError: (error) => {
           console.error('Failed to upload image:', error)
-          // Optionally handle error state here
+          toast.error(`Failed to upload image: ${error.message}`)
         },
       })
     }

@@ -35,9 +35,9 @@ const MainIndexRoute = MainIndexRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof MainIndexRoute
   '/post': typeof PostRoute
   '/write': typeof WriteRoute
-  '/': typeof MainIndexRoute
 }
 export interface FileRoutesByTo {
   '/post': typeof PostRoute
@@ -53,7 +53,7 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/post' | '/write' | '/'
+  fullPaths: '/' | '/post' | '/write'
   fileRoutesByTo: FileRoutesByTo
   to: '/post' | '/write' | '/'
   id: '__root__' | '/_main' | '/post' | '/write' | '/_main/'
@@ -84,7 +84,7 @@ declare module '@tanstack/react-router' {
     '/_main': {
       id: '/_main'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof MainRouteRouteImport
       parentRoute: typeof rootRouteImport
     }

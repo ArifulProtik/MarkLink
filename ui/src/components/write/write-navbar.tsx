@@ -1,5 +1,5 @@
-import { Logo } from '@ui/components/layout/Logo'
-import { PublishButton } from './PublishButton'
+import { Logo } from '@ui/components/layout/logo'
+import { PublishButton } from './publish-button'
 
 type WriteNavbarProps = {
   title: string

@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
-import { GetStartedBtn } from '../home/GetStartedBtn'
-import { AvaterBtn } from '../home/AvaterBtn'
+import { GetStartedBtn } from '../home/get-started-btn'
+import { AvaterBtn } from '../home/avater-btn'
 import type { User } from 'better-auth'
 
 type MainHeaderProps = {

@@ -3,14 +3,21 @@ import { z } from 'zod'
 import { Button } from '@ui/components/ui/button'
 import { Dialog, DialogContent, DialogTrigger } from '@ui/components/ui/dialog'
 import { Input } from '@ui/components/ui/input'
-import { TagInput } from '@ui/components/shared/TagInput'
+import { TagInput } from '@ui/components/shared/tag-input'
+
 import { useUploadImage } from '@ui/hooks/use-upload-image'
+
 import { Textarea } from '@ui/components/ui/textarea'
+
 import { useMutation } from '@tanstack/react-query'
+
 import { api } from '@ui/lib/api'
+
 import { useRouter } from '@tanstack/react-router'
+
 import { toast } from 'sonner'
-import { ImageUpload } from './ImageUpload'
+
+import { ImageUpload } from './image-upload'
 
 const MAX_PREVIEW_LENGTH = 150
 const MAX_TAGS = 5

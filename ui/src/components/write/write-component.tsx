@@ -1,8 +1,8 @@
 import * as React from 'react'
-import EditorComponent from '../Editor/Editor'
+import EditorComponent from '../Editor/editor'
 import { useArticleEditor } from '../Editor/use-editor'
-import { TitileInput } from './TitileInput'
-import { WriteNavbar } from './WriteNavbar'
+import { TitileInput } from './title-input'
+import { WriteNavbar } from './write-navbar'
 
 export function WriteComponent() {
   const [title, setTitle] = React.useState('')

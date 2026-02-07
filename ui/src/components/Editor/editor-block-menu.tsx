@@ -16,7 +16,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
-import { EditorImageAdd } from './EditorImageAdd'
+import { EditorImageAdd } from './editor-image-add'
 import type { Editor } from '@tiptap/react'
 
 type EditorBlockMenuProps = {

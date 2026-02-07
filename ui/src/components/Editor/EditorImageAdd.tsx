@@ -23,6 +23,12 @@ export function EditorImageAdd({
 
   const { mutate: uploadImage, isPending: isUploading } = useUploadImage()
 
+  const clearFileInput = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
+
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
@@ -30,10 +36,18 @@ export function EditorImageAdd({
         onSuccess: (uploadedUrl) => {
           editor.chain().focus().setImage({ src: uploadedUrl }).run()
           onClose()
+          clearFileInput()
         },
         onError: (error) => {
+          const errorMessage =
+            error instanceof Error
+              ? error.message
+              : typeof error === 'string'
+                ? error
+                : JSON.stringify(error)
           console.error('Failed to upload image:', error)
-          toast.error(`Failed to upload image: ${error.message}`)
+          toast.error(`Failed to upload image: ${errorMessage}`)
+          clearFileInput()
         },
       })
     }

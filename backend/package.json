@@ -19,6 +19,8 @@
     "@elysiajs/cors": "^1.4.1",
     "@elysiajs/openapi": "^1.4.14",
     "@elysiajs/server-timing": "^1.4.0",
+    "@typescript-eslint/eslint-plugin": "^8.54.0",
+    "@typescript-eslint/parser": "^8.54.0",
     "better-auth": "^1.4.17",
     "cloudinary": "^2.9.0",
     "drizzle-orm": "^0.45.1",

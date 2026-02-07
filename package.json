@@ -13,6 +13,7 @@
     "test": "bun run --filter '*' test"
   },
   "dependencies": {
-    "elysia": "^1.4.22"
+    "elysia": "^1.4.22",
+    "marklink-monorepo": "."
   }
 }

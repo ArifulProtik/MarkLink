@@ -1,9 +1,9 @@
-import type { ToggleLikeBodyT } from "@backend/shared/like.model.ts"
-import type { User } from "better-auth"
-import { db } from "@backend/db/index.ts"
-import { article, like } from "@backend/db/schema/article.ts"
-import { and, eq } from "drizzle-orm"
-import { InternalServerError, NotFoundError } from "./error.service.ts"
+import type { ToggleLikeBodyT } from '@backend/shared/like.model.ts'
+import type { User } from 'better-auth'
+import { db } from '@backend/db/index.ts'
+import { article, like } from '@backend/db/schema/article.ts'
+import { and, eq } from 'drizzle-orm'
+import { InternalServerError, NotFoundError } from './error.service.ts'
 
 export const ToggleLike = async (body: ToggleLikeBodyT, user: User) => {
   try {
@@ -12,7 +12,7 @@ export const ToggleLike = async (body: ToggleLikeBodyT, user: User) => {
     })
 
     if (!existingArticle) {
-      throw new NotFoundError("Article not found")
+      throw new NotFoundError('Article not found')
     }
 
     const existingLike = await db.query.like.findFirst({
@@ -29,7 +29,7 @@ export const ToggleLike = async (body: ToggleLikeBodyT, user: User) => {
           eq(like.liker_id, user.id),
         ),
       )
-      return { success: true, liked: false, message: "Article unliked successfully" }
+      return { success: true, liked: false, message: 'Article unliked successfully' }
     }
 
     await db.insert(like).values({
@@ -37,12 +37,12 @@ export const ToggleLike = async (body: ToggleLikeBodyT, user: User) => {
       liker_id: user.id,
     })
 
-    return { success: true, liked: true, message: "Article liked successfully" }
+    return { success: true, liked: true, message: 'Article liked successfully' }
   }
   catch (error) {
     if (error instanceof NotFoundError) {
       throw error
     }
-    throw new InternalServerError("Failed to toggle like", error)
+    throw new InternalServerError('Failed to toggle like', error)
   }
 }

@@ -1,7 +1,7 @@
-import { config } from "./config.ts"
-import { app } from "./server.ts"
+import { config } from './config.ts'
+import { app } from './server.ts'
 
-const signals = ["SIGINT", "SIGTERM"]
+const signals = ['SIGINT', 'SIGTERM']
 const banner = `
 -------------------------------------
   SERVER STARTED SUCCESSFULLY
@@ -20,18 +20,18 @@ for (const signal of signals) {
   })
 }
 
-process.on("uncaughtException", (error) => {
+process.on('uncaughtException', (error) => {
   console.error(error)
 })
 
-process.on("unhandledRejection", (error) => {
+process.on('unhandledRejection', (error) => {
   console.error(error)
 })
 
 app.listen(
   config.PORT,
   () => {
-    if (config.NODE_ENV === "development") {
+    if (config.NODE_ENV === 'development') {
       console.log(banner)
     }
     else {

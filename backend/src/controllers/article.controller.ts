@@ -30,7 +30,7 @@ export const articleController = new Elysia({ prefix: '/article' })
     isAuthOptional: true,
   })
   .put(
-    '/:id',
+    '/id/:id',
     async ({ params: { id }, body, user }) => await UpdatePost(id, body, user),
     {
       body: UpdatePostBody,
@@ -38,7 +38,7 @@ export const articleController = new Elysia({ prefix: '/article' })
     },
   )
   .delete(
-    '/:id',
+    '/id/:id',
     async ({ params: { id }, user }) => await DeletePost(id, user),
     {
       isAuth: true,

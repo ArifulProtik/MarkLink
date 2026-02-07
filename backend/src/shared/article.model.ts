@@ -24,6 +24,7 @@ const _createPost = createInsertSchema(article, {
   preview_text: z.string().min(1, "Preview text is required"),
   content: z.string().min(1, "Content is required"),
   preview_image: z.string().url("Invalid image URL"),
+  tags: z.array(z.string()).min(3, "At least 3 tags are required"),
 })
 
 export const CreatePostBody = _createPost.pick({
@@ -31,6 +32,7 @@ export const CreatePostBody = _createPost.pick({
   preview_image: true,
   preview_text: true,
   content: true,
+  tags: true,
 })
 
 export type CreatePostBodyT = z.infer<typeof CreatePostBody>

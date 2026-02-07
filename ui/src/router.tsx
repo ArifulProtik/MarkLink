@@ -17,9 +17,9 @@ export const getRouter = () => {
     defaultPreload: false,
     context: undefined as unknown as AuthContext,
   })
-
   return router
 }
+
 declare module '@tanstack/react-router' {
   interface Register {
     router: ReturnType<typeof createRouter>

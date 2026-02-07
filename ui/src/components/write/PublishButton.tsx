@@ -1,97 +1,145 @@
-import { useEffect, useRef, useState } from 'react'
-import { HugeiconsIcon } from '@hugeicons/react'
-import { Cancel01Icon } from '@hugeicons/core-free-icons'
+import { useCallback, useMemo, useRef, useState } from 'react'
+import { z } from 'zod'
 import { Button } from '@ui/components/ui/button'
 import { Dialog, DialogContent, DialogTrigger } from '@ui/components/ui/dialog'
 import { Input } from '@ui/components/ui/input'
-import { Badge } from '@ui/components/ui/badge'
-import type { ChangeEvent, KeyboardEvent } from 'react'
+import { TagInput } from '@ui/components/shared/TagInput'
+import { useUploadImage } from '@ui/hooks/use-upload-image'
+import { Textarea } from '@ui/components/ui/textarea'
+import { useMutation } from '@tanstack/react-query'
+import { api } from '@ui/lib/api'
+import { useRouter } from '@tanstack/react-router'
+import { toast } from 'sonner'
+import { ImageUpload } from './ImageUpload'
+
+const MAX_PREVIEW_LENGTH = 150
+const MAX_TAGS = 5
+
+type PublishData = z.infer<typeof publishSchema>
+
+const publishSchema = z.object({
+  title: z.string().min(1, 'Title is required'),
+  preview_image: z.preprocess(
+    (val) => (val === null ? '' : val),
+    z.string().min(1, 'Preview image is required'),
+  ),
+  preview_text: z
+    .string()
+    .min(1, 'Preview text is required')
+    .max(
+      MAX_PREVIEW_LENGTH,
+      `Preview text must be ${MAX_PREVIEW_LENGTH} characters or less`,
+    ),
+  content: z.string().min(1, 'Content is required'),
+  tags: z
+    .array(z.string().min(3, 'Tag must be at least 3 characters'))
+    .min(1, 'At least one tag is required')
+    .max(MAX_TAGS, `No more than ${MAX_TAGS} tags allowed`),
+})
 
 type PublishButtonProps = {
-  onClick?: () => void
   title: string
+  content: string | undefined
 }
 
-export function PublishButton({ onClick, title }: PublishButtonProps) {
-  const [previewTitle, setPreviewTitle] = useState(title)
-  const [description, setDescription] = useState('')
+function isContentEmpty(content: string | undefined): boolean {
+  if (!content) return true
+  return content === '' || content === '<p></p>'
+}
+
+export function PublishButton({ title, content }: PublishButtonProps) {
+  const [isOpen, setIsOpen] = useState(false)
+  const [previewTitle, setPreviewTitle] = useState('')
+  const [previewText, setPreviewText] = useState('')
   const [tags, setTags] = useState<Array<string>>([])
-  const [topicInput, setTopicInput] = useState('')
-  const [previewImage, setPreviewImage] = useState<string | null>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null)
+  const [errors, setErrors] = useState<Array<string>>([])
+  const previewTextRef = useRef<HTMLTextAreaElement>(null)
+  const router = useRouter()
 
-  useEffect(() => {
-    setPreviewTitle(title)
-  }, [title])
+  const { mutate: uploadImage, isPending: isUploading } = useUploadImage()
 
-  const handleImageClick = () => {
-    fileInputRef.current?.click()
-  }
+  const validateForm = useCallback((): PublishData | null => {
+    const result = publishSchema.safeParse({
+      title: previewTitle,
+      preview_image: previewImageUrl,
+      preview_text: previewText,
+      content: content || '',
+      tags: tags,
+    })
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      const imageUrl = URL.createObjectURL(file)
-      setPreviewImage(imageUrl)
+    if (!result.success) {
+      setErrors(result.error.issues.map((issue) => issue.message))
+      return null
     }
-  }
 
-  const handleTagKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' || e.key === ',' || e.key === ' ') {
-      e.preventDefault()
-      const newTag = topicInput.trim()
-      if (newTag && !tags.includes(newTag) && tags.length < 5) {
-        setTags([...tags, newTag])
-        setTopicInput('')
+    setErrors([])
+    return result.data
+  }, [previewTitle, previewImageUrl, previewText, content, tags])
+
+  const handleOpenChange = useCallback(
+    (open: boolean) => {
+      setIsOpen(open)
+      if (open) {
+        setPreviewTitle(title)
+        setPreviewText('')
+        setTags([])
+        setPreviewImageUrl(null)
+        setErrors([])
       }
-    } else if (e.key === 'Backspace' && !topicInput && tags.length > 0) {
-      e.preventDefault()
-      setTags(tags.slice(0, -1))
-    }
-  }
+    },
+    [title],
+  )
 
-  const removeTag = (tagToRemove: string) => {
-    setTags(tags.filter((tag) => tag !== tagToRemove))
-  }
+  const handleImageUpload = useCallback(
+    (file: File) => {
+      uploadImage(file, {
+        onSuccess: (url) => {
+          setPreviewImageUrl(url)
+        },
+        onError: () => {
+          toast.error('Failed to upload image')
+        },
+      })
+    },
+    [uploadImage],
+  )
+
+  const isTriggerDisabled = useMemo(
+    () => title === '' || isContentEmpty(content),
+    [title, content],
+  )
+
+  const { mutate: publishStory, isPending: isPublishing } = useMutation({
+    mutationFn: async (data: PublishData) => {
+      const { data: res, error } = await api.api.v1.article.post(data)
+      if (error) throw error
+      return res
+    },
+    onError: () => {
+      toast.error('Failed to publish story')
+    },
+    onSuccess: (mydata) => {
+      router.navigate({ to: `/article/${mydata.slug}` })
+    },
+  })
 
   return (
-    <Dialog>
-      <DialogTrigger>
-        <Button size="lg">Publish</Button>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      <DialogTrigger render={<Button disabled={isTriggerDisabled} size="lg" />}>
+        Publish
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[900px] gap-0 p-0 overflow-hidden">
+      <DialogContent className="sm:max-w-225 gap-0 p-0 overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-2">
-          {/* Left Column */}
+          {/* Left Column - Preview */}
           <div className="p-8 md:p-10 space-y-6">
             <h3 className="font-bold text-lg mb-4">Story Preview</h3>
 
-            {/* Image Picker Placeholder */}
-            <div
-              onClick={handleImageClick}
-              className="w-full aspect-video bg-muted flex items-center
-                justify-center text-center p-6 cursor-pointer hover:bg-muted/80
-                transition-colors rounded-md overflow-hidden relative"
-            >
-              {previewImage ? (
-                <img
-                  src={previewImage}
-                  alt="Preview"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <p className="text-muted-foreground text-sm">
-                  Include a high-quality image in your story to make it more
-                  inviting to readers.
-                </p>
-              )}
-              <input
-                type="file"
-                ref={fileInputRef}
-                className="hidden"
-                accept="image/*"
-                onChange={handleFileChange}
-              />
-            </div>
+            <ImageUpload
+              previewImage={previewImageUrl}
+              isUploading={isUploading}
+              onFileSelect={handleImageUpload}
+            />
 
             <div className="space-y-4 pt-2">
               <Input
@@ -100,21 +148,30 @@ export function PublishButton({ onClick, title }: PublishButtonProps) {
                 placeholder="Title"
                 className="text-lg font-bold"
               />
-              <Input
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+              <Textarea
+                ref={previewTextRef}
+                value={previewText}
+                maxLength={MAX_PREVIEW_LENGTH}
+                onChange={(e) => setPreviewText(e.target.value)}
+                onInput={(e) => {
+                  const target = e.target as HTMLTextAreaElement
+                  target.style.height = 'auto'
+                  target.style.height = `${Math.min(target.scrollHeight, 72)}px`
+                }}
                 placeholder="Write a preview description..."
+                rows={1}
+                className="min-h-9 max-h-18 resize-none overflow-hidden"
               />
             </div>
 
             <p className="text-xs text-muted-foreground pt-2">
               Note: Changes here will affect how your story appears in public
-              places like Medium’s homepage and in subscribers’ inboxes — not
-              the contents of the story itself.
+              places like the Marklink homepage and in subscribers&apos; inboxes
+              — not the contents of the story itself.
             </p>
           </div>
 
-          {/* Right Column */}
+          {/* Right Column - Publishing Options */}
           <div className="p-8 md:p-10 space-y-6 flex flex-col">
             <div className="space-y-4">
               <p className="text-muted-foreground">
@@ -125,53 +182,46 @@ export function PublishButton({ onClick, title }: PublishButtonProps) {
               </p>
 
               <p className="text-sm pt-2">
-                Add or change topics (up to 5) so readers know what your story
-                is about
+                Add or change topics (up to {MAX_TAGS}) so readers know what
+                your story is about
               </p>
 
-              <div
-                className="flex flex-wrap gap-2 p-2 min-h-10 border border-input
-                  rounded-md bg-transparent focus-within:ring-1
-                  focus-within:ring-ring"
-              >
-                {tags.map((tag) => (
-                  <Badge
-                    key={tag}
-                    variant="secondary"
-                    className="gap-1 rounded-md px-2 py-1 text-sm font-normal"
-                  >
-                    {tag}
-                    <button
-                      type="button"
-                      onClick={() => removeTag(tag)}
-                      className="text-muted-foreground hover:text-foreground
-                        outline-none"
-                    >
-                      <HugeiconsIcon
-                        icon={Cancel01Icon}
-                        size={14}
-                        strokeWidth={2}
-                      />
-                      <span className="sr-only">Remove {tag}</span>
-                    </button>
-                  </Badge>
-                ))}
-                <input
-                  value={topicInput}
-                  onChange={(e) => setTopicInput(e.target.value)}
-                  onKeyDown={handleTagKeyDown}
-                  placeholder={tags.length === 0 ? 'Add a topic...' : ''}
-                  className="flex-1 bg-transparent border-none outline-none
-                    text-sm min-w-[120px] placeholder:text-muted-foreground"
-                />
-              </div>
+              <TagInput tags={tags} onTagsChange={setTags} maxTags={MAX_TAGS} />
             </div>
 
             <div className="flex-1" />
 
+            {errors.length > 0 && (
+              <div className="text-destructive text-xs space-y-1">
+                {errors.map((error, index) => (
+                  <p key={index}>{error}</p>
+                ))}
+              </div>
+            )}
+
             <div className="flex flex-row items-center gap-4 pt-4">
-              <Button onClick={onClick}>Publish now</Button>
-              <Button variant="secondary">Save as draft</Button>
+              <Button
+                disabled={isPublishing}
+                onClick={() => {
+                  const formData = validateForm()
+                  if (formData) {
+                    publishStory(formData)
+                  }
+                }}
+              >
+                {isPublishing ? (
+                  <div
+                    className="size-4 border-2 border-current
+                      border-t-transparent rounded-full animate-spin"
+                    aria-hidden="true"
+                  />
+                ) : (
+                  'Publish now'
+                )}
+              </Button>
+              <Button disabled variant="secondary">
+                Save as draft
+              </Button>
             </div>
           </div>
         </div>

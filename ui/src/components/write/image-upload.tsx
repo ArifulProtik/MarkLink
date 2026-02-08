@@ -69,8 +69,8 @@ export function ImageUpload({
       ) : (
         <div className="flex flex-col items-center gap-2 text-muted-foreground">
           <p className="text-sm">
-            Include a high-quality image in your story to make it more inviting
-            to readers.
+            Include a high-quality image in your article to make it more
+            inviting to readers.
           </p>
         </div>
       )}

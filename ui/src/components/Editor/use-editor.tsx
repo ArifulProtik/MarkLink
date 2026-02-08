@@ -38,7 +38,7 @@ export const useArticleEditor = ({
         codeBlock: false,
       }),
       Placeholder.configure({
-        placeholder: 'Tell your story...',
+        placeholder: 'Write your article...',
         includeChildren: false,
       }),
       Image,

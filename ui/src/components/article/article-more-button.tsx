@@ -6,6 +6,7 @@ import {
   MoreHorizontalFreeIcons,
   UserAdd02Icon,
 } from '@hugeicons/core-free-icons'
+import { useNavigate, useParams } from '@tanstack/react-router'
 import { Button } from '../ui/button'
 import {
   DropdownMenu,
@@ -27,6 +28,8 @@ function ArticleMoreButton({
   userID,
 }: ArticleMoreButtonProps) {
   const isAuthor = userID && userID === authorID
+  const navigate = useNavigate()
+  const { slug } = useParams({ from: '/_main/article/$slug' })
 
   const handleFollowAuthor = () => {
     console.log('Follow author:', authorID)
@@ -37,7 +40,7 @@ function ArticleMoreButton({
   }
 
   const handleEdit = () => {
-    console.log('Edit article:', articleID)
+    navigate({ to: '/article/edit/$slug', params: { slug } })
   }
 
   const handleDelete = () => {

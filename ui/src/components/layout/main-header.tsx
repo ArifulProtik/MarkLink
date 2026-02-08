@@ -17,7 +17,7 @@ export function MainHeader({ User }: MainHeaderProps) {
           </Link>
 
           <div className="flex items-center gap-4">
-            <Link to="/">Our Story</Link>
+            <Link to="/">Our Article</Link>
             <Link to="/write"> Write</Link>
 
             {User ? <AvaterBtn User={User} /> : <GetStartedBtn />}

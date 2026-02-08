@@ -5,17 +5,17 @@ import { Dialog, DialogContent, DialogTrigger } from '@ui/components/ui/dialog'
 import { TagInput } from '@ui/components/shared/tag-input'
 import { useUploadImage } from '@ui/hooks/use-upload-image'
 import { Textarea } from '@ui/components/ui/textarea'
-import { usePublishArticle } from '@ui/data/queries/article'
-import { useRouter } from '@tanstack/react-router'
+import { useUpdateArticle } from '@ui/data/queries/article'
+import { Link, useRouter } from '@tanstack/react-router'
 import { toast } from 'sonner'
 import { ImageUpload } from './image-upload'
 
 const MAX_PREVIEW_LENGTH = 150
 const MAX_TAGS = 5
 
-type PublishData = z.infer<typeof publishSchema>
+type UpdateData = z.infer<typeof updateSchema>
 
-const publishSchema = z.object({
+const updateSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   preview_image: z.preprocess(
     (val) => (val === null ? '' : val),
@@ -35,9 +35,17 @@ const publishSchema = z.object({
     .max(MAX_TAGS, `No more than ${MAX_TAGS} tags allowed`),
 })
 
-type PublishButtonProps = {
+interface UpdateButtonProps {
+  articleId: string
   title: string
   content: string | undefined
+  slug: string
+  existingData: {
+    title: string
+    preview_image: string
+    preview_text: string
+    tags: Array<string>
+  }
 }
 
 function isContentEmpty(content: string | undefined): boolean {
@@ -45,20 +53,28 @@ function isContentEmpty(content: string | undefined): boolean {
   return content === '' || content === '<p></p>'
 }
 
-export function PublishButton({ title, content }: PublishButtonProps) {
+export function UpdateButton({
+  articleId,
+  title,
+  content,
+  slug,
+  existingData,
+}: UpdateButtonProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const [previewTitle, setPreviewTitle] = useState('')
-  const [previewText, setPreviewText] = useState('')
-  const [tags, setTags] = useState<Array<string>>([])
-  const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null)
+  const [previewTitle, setPreviewTitle] = useState(existingData.title)
+  const [previewText, setPreviewText] = useState(existingData.preview_text)
+  const [tags, setTags] = useState<Array<string>>(existingData.tags)
+  const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(
+    existingData.preview_image,
+  )
   const [errors, setErrors] = useState<Array<string>>([])
   const previewTextRef = useRef<HTMLTextAreaElement>(null)
   const router = useRouter()
 
   const { mutate: uploadImage, isPending: isUploading } = useUploadImage()
 
-  const validateForm = useCallback((): PublishData | null => {
-    const result = publishSchema.safeParse({
+  const validateForm = useCallback((): UpdateData | null => {
+    const result = updateSchema.safeParse({
       title: previewTitle,
       preview_image: previewImageUrl,
       preview_text: previewText,
@@ -79,14 +95,15 @@ export function PublishButton({ title, content }: PublishButtonProps) {
     (open: boolean) => {
       setIsOpen(open)
       if (open) {
-        setPreviewTitle(title)
-        setPreviewText('')
-        setTags([])
-        setPreviewImageUrl(null)
+        // Reset to existing data when opening
+        setPreviewTitle(existingData.title)
+        setPreviewText(existingData.preview_text)
+        setTags(existingData.tags)
+        setPreviewImageUrl(existingData.preview_image)
         setErrors([])
       }
     },
-    [title],
+    [existingData],
   )
 
   const handleImageUpload = useCallback(
@@ -108,13 +125,12 @@ export function PublishButton({ title, content }: PublishButtonProps) {
     [title, content],
   )
 
-  const { mutate: publishArticle, isPending: isPublishing } =
-    usePublishArticle()
+  const { mutate: updateArticle, isPending: isUpdating } = useUpdateArticle()
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger render={<Button disabled={isTriggerDisabled} size="lg" />}>
-        Publish
+        Update
       </DialogTrigger>
       <DialogContent className="sm:max-w-225 gap-0 p-0 overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-2">
@@ -129,41 +145,38 @@ export function PublishButton({ title, content }: PublishButtonProps) {
             />
 
             <div className="space-y-4 pt-2">
-              <label
-                className="text-sm font-medium text-muted-foreground mb-2 block"
-              >
-                Title
-              </label>
-              <Textarea
-                value={previewTitle}
-                onChange={(e) => setPreviewTitle(e.target.value)}
-                onInput={(e) => {
-                  const target = e.target as HTMLTextAreaElement
-                  target.style.height = 'auto'
-                  target.style.height = `${Math.min(target.scrollHeight, 120)}px`
-                }}
-                onFocus={(e) => {
-                  const target = e.target as HTMLTextAreaElement
-                  target.style.height = 'auto'
-                  target.style.height = `${Math.min(target.scrollHeight, 120)}px`
-                }}
-                placeholder="Enter your article title"
-                rows={1}
-                className="text-lg min-h-9 resize-none overflow-hidden"
-              />
-              <label
-                className="text-sm font-medium text-muted-foreground mb-2 block"
-              >
-                Preview Text
-              </label>
-              <Textarea
-                ref={previewTextRef}
-                value={previewText}
-                maxLength={MAX_PREVIEW_LENGTH}
-                onChange={(e) => setPreviewText(e.target.value)}
-                placeholder="Write a preview description..."
-                className="h-36 resize-none overflow-hidden"
-              />
+              <div className="space-y-2">
+                <label
+                  className="text-sm font-medium text-muted-foreground mb-2
+                    block"
+                >
+                  Title
+                </label>
+                <Textarea
+                  value={previewTitle}
+                  maxLength={100}
+                  onChange={(e) => setPreviewTitle(e.target.value)}
+                  placeholder="Enter your article title"
+                  rows={1}
+                  className="text-lg h-6 resize-none overflow-hidden"
+                />
+              </div>
+              <div className="space-y-2">
+                <label
+                  className="text-sm font-medium text-muted-foreground mb-2
+                    block"
+                >
+                  Preview Text
+                </label>
+                <Textarea
+                  ref={previewTextRef}
+                  value={previewText}
+                  maxLength={MAX_PREVIEW_LENGTH}
+                  onChange={(e) => setPreviewText(e.target.value)}
+                  placeholder="Write a preview description..."
+                  className="h-20 resize-none overflow-hidden"
+                />
+              </div>
             </div>
 
             <p className="text-xs text-muted-foreground pt-2">
@@ -173,14 +186,12 @@ export function PublishButton({ title, content }: PublishButtonProps) {
             </p>
           </div>
 
-          {/* Right Column - Publishing Options */}
+          {/* Right Column - Update Options */}
           <div className="p-8 md:p-10 space-y-6 flex flex-col">
             <div className="space-y-4">
               <p className="text-muted-foreground">
-                Publishing to:{' '}
-                <span className="font-bold text-foreground">
-                  Kakaashihatakee
-                </span>
+                Updating article by:{' '}
+                <span className="font-bold text-foreground">You</span>
               </p>
 
               <p className="text-sm pt-2">
@@ -203,31 +214,34 @@ export function PublishButton({ title, content }: PublishButtonProps) {
 
             <div className="flex flex-row items-center gap-4 pt-4">
               <Button
-                disabled={isPublishing}
+                disabled={isUpdating}
                 onClick={() => {
                   const formData = validateForm()
                   if (formData) {
-                    publishArticle(formData, {
-                      onSuccess: (data) => {
-                        router.navigate({ to: `/article/${data.slug}` })
+                    updateArticle(
+                      { id: articleId, data: formData },
+                      {
+                        onSuccess: () => {
+                          router.navigate({ to: `/article/${slug}` })
+                        },
                       },
-                    })
+                    )
                   }
                 }}
               >
-                {isPublishing ? (
+                {isUpdating ? (
                   <div
                     className="size-4 border-2 border-current
                       border-t-transparent rounded-full animate-spin"
                     aria-hidden="true"
                   />
                 ) : (
-                  'Publish now'
+                  'Update now'
                 )}
               </Button>
-              <Button disabled variant="secondary">
-                Save as draft
-              </Button>
+              <Link to="/article/$slug" params={{ slug }}>
+                <Button variant="secondary">Cancel</Button>
+              </Link>
             </div>
           </div>
         </div>

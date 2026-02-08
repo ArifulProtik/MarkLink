@@ -10,6 +10,7 @@ interface ContentBarProps {
   likesCount: number
   isLiked: boolean
   articleID: string
+  slug: string
   authorID: string
   articleTitle: string
   userID?: string | null
@@ -20,6 +21,7 @@ const ContentBar = ({
   likesCount,
   isLiked,
   articleID,
+  slug,
   authorID,
   articleTitle,
   userID,
@@ -59,7 +61,7 @@ const ContentBar = ({
         </div>
         <div className="flex gap-3">
           <ArticleShareButton
-            articleID={articleID}
+            slug={slug}
             articleTitle={articleTitle}
           />
           <ArticleMoreButton

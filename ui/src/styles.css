@@ -166,14 +166,6 @@
       @apply border-l-3! border-foreground! pl-6! italic! my-10! text-[1.1em]! text-foreground/90!;
     }
 
-    /* Code Blocks */
-    pre {
-      @apply font-mono! bg-muted! rounded-md! p-4! my-8! overflow-x-auto! text-[15px]! border! border-border!;
-      code {
-        @apply bg-transparent! p-0! text-inherit! text-[14px]!;
-      }
-    }
-
     /* Inline Code */
     :not(pre) > code {
       @apply font-mono! bg-muted! px-1.5! py-0.5! rounded! text-[0.85em]! border! border-border!;

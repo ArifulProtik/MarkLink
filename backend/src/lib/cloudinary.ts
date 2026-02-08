@@ -13,7 +13,7 @@ if (config.CLOUDINARY_URL) {
         cloud_name: cloudName,
         api_key: apiKey,
         api_secret: apiSecret,
-        secure: false,
+        secure: true,
         upload_preset: 'ml_default',
       })
     }

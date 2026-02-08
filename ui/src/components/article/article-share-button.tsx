@@ -16,18 +16,18 @@ import {
 } from '../ui/dropdown-menu'
 
 interface ArticleShareButtonProps {
-  articleID: string
+  slug: string
   articleTitle: string
 }
 
 function ArticleShareButton({
-  articleID,
+  slug,
   articleTitle,
 }: ArticleShareButtonProps) {
   const shareUrl =
     typeof window !== 'undefined'
-      ? `${window.location.origin}/article/${articleID}`
-      : `/article/${articleID}`
+      ? `${window.location.origin}/article/${slug}`
+      : `/article/${slug}`
 
   const encodedUrl = encodeURIComponent(shareUrl)
   const encodedTitle = encodeURIComponent(articleTitle)

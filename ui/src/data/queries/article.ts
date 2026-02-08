@@ -14,7 +14,7 @@ import { client } from '@/lib/api'
 
 export const GetArticleQueryOptions = (slug: string) =>
   queryOptions({
-    queryKey: [QUERY_KEYS.GET_ARTICLE, slug],
+    queryKey: QUERY_KEYS.GET_ARTICLE(slug),
     queryFn: async () => {
       const res = await client.api.v1.article({ slug }).get()
       if (!res.data) throw new Error('Not found')
@@ -36,7 +36,7 @@ export function useToggleArticleLike() {
     onSuccess: (data) => {
       toast.success(data.data?.message)
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.GET_ARTICLE],
+        queryKey: ['article'],
       })
     },
     onError: () => {
@@ -70,13 +70,13 @@ export function useUpdateArticle() {
       return res
     },
     onSuccess: () => {
-      toast.success('Story updated successfully')
+      toast.success('Article updated successfully')
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.GET_ARTICLE],
+        queryKey: ['article'],
       })
     },
     onError: () => {
-      toast.error('Failed to update story')
+      toast.error('Failed to update article')
     },
   })
 }

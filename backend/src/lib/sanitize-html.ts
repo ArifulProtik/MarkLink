@@ -32,7 +32,7 @@ export const sanitizeHtml = (dirtyHtml: string) => {
       'class',
     ],
 
-    ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|tel|ftp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i,
+    ALLOWED_URI_REGEXP: /^(?:https?|mailto|tel|ftp):/i,
 
     // ADD_TAGS: ['iframe'],
     // ADD_ATTR: ['allowfullscreen', 'frameborder', 'scrolling'],

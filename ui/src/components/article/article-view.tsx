@@ -54,6 +54,7 @@ const ArticleView = ({ article, author }: ArticleViewProps) => {
           likesCount={article.likesCount}
           authorID={article.author_id}
           articleTitle={article.title}
+          slug={article.slug}
           userID={author?.id}
           onCommentClick={scrollToComments}
           isLiked={article.isLikedByUser}
@@ -65,6 +66,7 @@ const ArticleView = ({ article, author }: ArticleViewProps) => {
           likesCount={article.likesCount}
           authorID={article.author_id}
           articleTitle={article.title}
+          slug={article.slug}
           userID={author?.id}
           onCommentClick={scrollToComments}
           isLiked={article.isLikedByUser}

@@ -2,7 +2,16 @@ import { treaty } from '@elysiajs/eden'
 import type { App } from 'backend'
 
 const isBrowser = typeof window !== 'undefined'
-export const client = treaty<App>('http://localhost:3000', {
+
+const getBaseUrl = () => {
+  if (typeof import.meta.env !== 'undefined' && import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL
+  }
+  // Fallback for development
+  return 'http://localhost:3000'
+}
+
+export const client = treaty<App>(getBaseUrl(), {
   fetch: {
     credentials: 'include',
   },

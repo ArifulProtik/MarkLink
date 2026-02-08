@@ -24,7 +24,7 @@ export const useArticleEditor = ({
   onUpdate,
 }: UseArticleEditorProps = {}): Editor | null => {
   const editor = useEditor({
-    immediatelyRender: ssr,
+    immediatelyRender: !ssr,
     editable: editable,
     content,
     onUpdate,

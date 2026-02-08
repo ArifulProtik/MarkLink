@@ -1,8 +1,26 @@
 import { treaty } from '@elysiajs/eden'
 import type { App } from 'backend'
 
-export const api = treaty<App>('http://localhost:3000', {
+const isBrowser = typeof window !== 'undefined'
+
+const getBaseUrl = () => {
+  if (typeof import.meta.env !== 'undefined' && import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL
+  }
+  // Fallback for development
+  return 'http://localhost:3000'
+}
+
+export const client = treaty<App>(getBaseUrl(), {
   fetch: {
     credentials: 'include',
+  },
+  onRequest: async () => {
+    if (!isBrowser) {
+      const { getRequestHeaders } = await import('@tanstack/react-start/server')
+      return {
+        headers: getRequestHeaders(),
+      }
+    }
   },
 })

@@ -2,20 +2,20 @@ import type {
   CreateCommentBodyT,
   GetCommentsQueryT,
   UpdateCommentBodyT,
-} from "@backend/shared/comment.model.ts"
-import type { User } from "better-auth"
-import { db } from "@backend/db/index.ts"
-import { comment } from "@backend/db/schema/article.ts"
+} from '@backend/shared/comment.model.ts'
+import type { User } from 'better-auth'
+import { db } from '@backend/db/index.ts'
+import { comment } from '@backend/db/schema/article.ts'
 import {
   desc,
   eq,
   sql,
-} from "drizzle-orm"
+} from 'drizzle-orm'
 import {
   ForbiddenError,
   InternalServerError,
   NotFoundError,
-} from "./error.service.ts"
+} from './error.service.ts'
 
 export const CreateComment = async (body: CreateCommentBodyT, user: User) => {
   try {
@@ -25,7 +25,7 @@ export const CreateComment = async (body: CreateCommentBodyT, user: User) => {
     }).returning({ insertedId: comment.id })
 
     if (!newComment) {
-      throw new InternalServerError("Failed to create comment")
+      throw new InternalServerError('Failed to create comment')
     }
 
     const result = await db.query.comment.findFirst({
@@ -44,7 +44,7 @@ export const CreateComment = async (body: CreateCommentBodyT, user: User) => {
     return result
   }
   catch (error) {
-    throw new InternalServerError("Failed to create comment", error)
+    throw new InternalServerError('Failed to create comment', error)
   }
 }
 
@@ -79,7 +79,7 @@ export const GetComments = async (articleId: string, query: GetCommentsQueryT) =
     }
   }
   catch (error) {
-    throw new InternalServerError("Failed to fetch comments", error)
+    throw new InternalServerError('Failed to fetch comments', error)
   }
 }
 
@@ -90,11 +90,11 @@ export const UpdateComment = async (id: string, body: UpdateCommentBodyT, user: 
     })
 
     if (!existingComment) {
-      throw new NotFoundError("Comment not found")
+      throw new NotFoundError('Comment not found')
     }
 
     if (existingComment.author_id !== user.id) {
-      throw new ForbiddenError("You are not authorized to update this comment")
+      throw new ForbiddenError('You are not authorized to update this comment')
     }
 
     const [updatedComment] = await db.update(comment)
@@ -111,7 +111,7 @@ export const UpdateComment = async (id: string, body: UpdateCommentBodyT, user: 
     if (error instanceof NotFoundError || error instanceof ForbiddenError) {
       throw error
     }
-    throw new InternalServerError("Failed to update comment", error)
+    throw new InternalServerError('Failed to update comment', error)
   }
 }
 
@@ -122,21 +122,21 @@ export const DeleteComment = async (id: string, user: User) => {
     })
 
     if (!existingComment) {
-      throw new NotFoundError("Comment not found")
+      throw new NotFoundError('Comment not found')
     }
 
     if (existingComment.author_id !== user.id) {
-      throw new ForbiddenError("You are not authorized to delete this comment")
+      throw new ForbiddenError('You are not authorized to delete this comment')
     }
 
     await db.delete(comment).where(eq(comment.id, id))
 
-    return { success: true, message: "Comment deleted successfully" }
+    return { success: true, message: 'Comment deleted successfully' }
   }
   catch (error) {
     if (error instanceof NotFoundError || error instanceof ForbiddenError) {
       throw error
     }
-    throw new InternalServerError("Failed to delete comment", error)
+    throw new InternalServerError('Failed to delete comment', error)
   }
 }

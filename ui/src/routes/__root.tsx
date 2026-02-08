@@ -1,18 +1,21 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
+import {
+  HeadContent,
+  Scripts,
+  createRootRouteWithContext,
+} from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { getAuthSession } from '@ui/data/server-auth'
-import { useState } from 'react'
 import { Toaster } from '@ui/components/ui/sonner'
 import appCss from '../styles.css?url'
-import type { AuthContext } from '@ui/router'
+import type { AppRouteContext } from '@/router'
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<AppRouteContext>()({
   beforeLoad: async () => {
     const auth = await getAuthSession()
-    return { user: auth.data?.user } satisfies AuthContext
+    return { user: auth.data?.user }
   },
   head: () => ({
     links: [
@@ -35,7 +38,7 @@ export const Route = createRootRoute({
         name: 'viewport',
       },
       {
-        title: 'MarkLink',
+        title: 'MarkLink - Read Wrire Share',
       },
     ],
   }),
@@ -44,8 +47,7 @@ export const Route = createRootRoute({
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
-  const [queryClient] = useState(() => new QueryClient())
-
+  const { queryClient } = Route.useRouteContext()
   return (
     <html lang="en">
       <head>

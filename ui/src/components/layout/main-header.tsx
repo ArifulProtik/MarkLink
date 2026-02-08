@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
-import { GetStartedBtn } from '../home/GetStartedBtn'
-import { AvaterBtn } from '../home/AvaterBtn'
+import { GetStartedBtn } from '../home/get-started-btn'
+import { AvaterBtn } from '../home/avater-btn'
 import type { User } from 'better-auth'
 
 type MainHeaderProps = {
@@ -17,7 +17,7 @@ export function MainHeader({ User }: MainHeaderProps) {
           </Link>
 
           <div className="flex items-center gap-4">
-            <Link to="/">Our Story</Link>
+            <Link to="/">Our Article</Link>
             <Link to="/write"> Write</Link>
 
             {User ? <AvaterBtn User={User} /> : <GetStartedBtn />}

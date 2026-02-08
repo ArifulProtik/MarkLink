@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
@@ -13,15 +14,18 @@ type UseArticleEditorProps = {
   content?: string
   editable?: boolean
   onUpdate?: (params: { editor: Editor }) => void
+  ssr?: boolean
 }
 
 export const useArticleEditor = ({
   content = '',
   editable = true,
+  ssr = false,
   onUpdate,
 }: UseArticleEditorProps = {}): Editor | null => {
-  return useEditor({
-    editable,
+  const editor = useEditor({
+    immediatelyRender: !ssr,
+    editable: editable,
     content,
     onUpdate,
     extensions: [
@@ -34,7 +38,7 @@ export const useArticleEditor = ({
         codeBlock: false,
       }),
       Placeholder.configure({
-        placeholder: 'Tell your story...',
+        placeholder: 'Write your article...',
         includeChildren: false,
       }),
       Image,
@@ -58,4 +62,13 @@ export const useArticleEditor = ({
       },
     },
   })
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (editor) {
+      editor.setEditable(editable)
+    }
+  }, [editor, editable])
+
+  return editor
 }

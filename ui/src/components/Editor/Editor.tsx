@@ -1,6 +1,6 @@
 import { EditorContent } from '@tiptap/react'
-import { EditorBubbleMenu } from './EditorBubbleMenu'
-import { EditorBlockMenu } from './EditorBlockMenu'
+import { EditorBubbleMenu } from './editor-bubble-menu'
+import { EditorBlockMenu } from './editor-block-menu'
 import type { Editor as EditorType } from '@tiptap/react'
 
 type EditorProps = {

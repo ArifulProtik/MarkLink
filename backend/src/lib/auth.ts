@@ -1,13 +1,13 @@
-import { config } from "@backend/config.ts"
-import { db } from "@backend/db/index.ts"
-import { betterAuth } from "better-auth"
-import { drizzleAdapter } from "better-auth/adapters/drizzle"
-import { nanoid } from "nanoid"
+import { config } from '@backend/config.ts'
+import { db } from '@backend/db/index.ts'
+import { betterAuth } from 'better-auth'
+import { drizzleAdapter } from 'better-auth/adapters/drizzle'
+import { nanoid } from 'nanoid'
 
 export const auth = betterAuth({
   database: drizzleAdapter(
     db,
-    { provider: "pg" },
+    { provider: 'pg' },
   ),
   socialProviders: {
     github: {
@@ -22,10 +22,10 @@ export const auth = betterAuth({
       create: {
         before: async (user) => {
           let baseName = user.name
-            ? user.name.toLowerCase().replace(/\s+/g, "") // "John Doe" -> "johndoe"
-            : user.email.split("@")[0] // fallback to email prefix
+            ? user.name.toLowerCase().replace(/\s+/g, '') // "John Doe" -> "johndoe"
+            : user.email.split('@')[0] // fallback to email prefix
 
-          baseName = baseName!.replace(/[^a-z0-9]/g, "")
+          baseName = baseName!.replace(/[^a-z0-9]/g, '')
 
           const uniqueSuffix = nanoid(4) // e.g., "ab12"
           const username = `${baseName}.${uniqueSuffix}`
@@ -43,7 +43,7 @@ export const auth = betterAuth({
   user: {
     additionalFields: {
       username: {
-        type: "string",
+        type: 'string',
         returned: true,
       },
     },

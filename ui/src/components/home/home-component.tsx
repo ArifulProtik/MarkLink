@@ -23,7 +23,7 @@ export function HomeComponent() {
             className="text-5xl lg:text-7xl font-bold tracking-tight
               text-foreground leading-[1.1]"
           >
-            Share Your Story <br />
+            Share Your Article <br />
             <span className="text-primary">Connect the World</span>
           </h1>
           <p
@@ -31,7 +31,7 @@ export function HomeComponent() {
               mx-auto lg:mx-0"
           >
             MarkLink is the platform for writers, thinkers, and creators. Write
-            beautiful stories, build your audience, and discover great content.
+            beautiful articles, build your audience, and discover great content.
           </p>
           <div
             className="flex items-center justify-center lg:justify-start gap-4"

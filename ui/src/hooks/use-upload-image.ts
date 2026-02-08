@@ -1,10 +1,10 @@
 import { useMutation } from '@tanstack/react-query'
-import { api } from '@ui/lib/api'
+import { client } from '@ui/lib/api'
 
 export function useUploadImage() {
   return useMutation({
     mutationFn: async (file: File) => {
-      const { data, error } = await api.api.v1.upload.post({
+      const { data, error } = await client.api.v1.upload.post({
         file,
       })
 

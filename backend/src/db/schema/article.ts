@@ -1,52 +1,52 @@
-import { relations } from "drizzle-orm"
+import { relations } from 'drizzle-orm'
 import {
   index,
   pgTable,
   text,
   uniqueIndex,
-} from "drizzle-orm/pg-core"
-import { user } from "./auth.ts"
-import { baseColumns } from "./base.ts"
+} from 'drizzle-orm/pg-core'
+import { user } from './auth.ts'
+import { baseColumns } from './base.ts'
 
-export const article = pgTable("article", {
+export const article = pgTable('article', {
   ...baseColumns,
-  title: text("title").notNull(),
-  preview_image: text("preview_image").notNull(),
-  preview_text: text("preview_text").notNull(),
-  content: text("content").notNull(),
-  slug: text("slug").notNull().unique(),
-  tags: text("tags").array().notNull().default([]),
-  author_id: text("author_id")
+  title: text('title').notNull(),
+  preview_image: text('preview_image').notNull(),
+  preview_text: text('preview_text').notNull(),
+  content: text('content').notNull(),
+  slug: text('slug').notNull().unique(),
+  tags: text('tags').array().notNull().default([]),
+  author_id: text('author_id')
     .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
+    .references(() => user.id, { onDelete: 'cascade' }),
 })
 
-export const comment = pgTable("comment", {
+export const comment = pgTable('comment', {
   ...baseColumns,
-  content: text("content").notNull(),
-  author_id: text("author_id")
+  content: text('content').notNull(),
+  author_id: text('author_id')
     .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-  article_id: text("article_id")
+    .references(() => user.id, { onDelete: 'cascade' }),
+  article_id: text('article_id')
     .notNull()
-    .references(() => article.id, { onDelete: "cascade" }),
+    .references(() => article.id, { onDelete: 'cascade' }),
 })
 
 export const like = pgTable(
-  "like",
+  'like',
   {
     ...baseColumns,
-    liker_id: text("author_id")
+    liker_id: text('author_id')
       .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
-    article_id: text("article_id")
+      .references(() => user.id, { onDelete: 'cascade' }),
+    article_id: text('article_id')
       .notNull()
-      .references(() => article.id, { onDelete: "cascade" }),
+      .references(() => article.id, { onDelete: 'cascade' }),
   },
 
   t => [
-    uniqueIndex("unique_like").on(t.article_id, t.liker_id),
-    index("article_id_idx").on(t.article_id),
+    uniqueIndex('unique_like').on(t.article_id, t.liker_id),
+    index('article_id_idx').on(t.article_id),
   ],
 )
 

@@ -83,7 +83,7 @@ export const EditorBubbleMenu = ({ editor }: EditorBubbleMenuProps) => {
           <input
             type="url"
             className="flex-1 bg-transparent text-sm outline-none text-slate-700
-              placeholder:text-slate-400 min-w-[200px]"
+              placeholder:text-slate-400 min-w-50"
             placeholder="Paste or type link..."
             value={url}
             onChange={(e) => setUrl(e.target.value)}

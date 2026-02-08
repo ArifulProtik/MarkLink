@@ -1,24 +1,13 @@
 import { createFileRoute, notFound } from '@tanstack/react-router'
-import { sanitizeHtml } from '@backend/lib/sanitize-html'
-import { client } from '@/lib/api'
+import { useSuspenseQuery } from '@tanstack/react-query'
 import ArticleView from '@/components/article/article-view'
+import { GetArticleQueryOptions } from '@/data/queries/article'
 
 export const Route = createFileRoute('/_main/article/$slug')({
   component: RouteComponent,
-  loader: async ({ params, context }) => {
-    const { slug } = params
+  loader: async ({ params, context: { queryClient } }) => {
     try {
-      const res = await client.api.v1.article({ slug }).get()
-      if (res.data) {
-        return {
-          article: {
-            ...res.data,
-            content: sanitizeHtml(res.data.content),
-          },
-          user: context.user,
-        }
-      }
-      throw notFound()
+      await queryClient.ensureQueryData(GetArticleQueryOptions(params.slug))
     } catch {
       throw notFound()
     }
@@ -27,6 +16,9 @@ export const Route = createFileRoute('/_main/article/$slug')({
 })
 
 function RouteComponent() {
-  const data = Route.useLoaderData()
-  return <ArticleView article={data.article} author={data.user} />
+  const { slug } = Route.useParams()
+  const { user } = Route.useRouteContext()
+
+  const { data: article } = useSuspenseQuery(GetArticleQueryOptions(slug))
+  return <ArticleView article={article} author={user} />
 }

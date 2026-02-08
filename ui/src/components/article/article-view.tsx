@@ -11,7 +11,7 @@ interface ArticleViewProps {
   author: User | null | undefined
 }
 
-const ArticleView = ({ article }: ArticleViewProps) => {
+const ArticleView = ({ article, author }: ArticleViewProps) => {
   const commentViewRef = useRef<HTMLDivElement>(null)
 
   const scrollToComments = useCallback(() => {
@@ -53,6 +53,8 @@ const ArticleView = ({ article }: ArticleViewProps) => {
         <ContentBar
           likesCount={article.likesCount}
           authorID={article.author_id}
+          articleTitle={article.title}
+          userID={author?.id}
           onCommentClick={scrollToComments}
           isLiked={article.isLikedByUser}
           articleID={article.id}
@@ -62,6 +64,8 @@ const ArticleView = ({ article }: ArticleViewProps) => {
         <ContentBar
           likesCount={article.likesCount}
           authorID={article.author_id}
+          articleTitle={article.title}
+          userID={author?.id}
           onCommentClick={scrollToComments}
           isLiked={article.isLikedByUser}
           articleID={article.id}

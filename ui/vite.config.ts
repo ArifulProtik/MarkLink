@@ -6,9 +6,10 @@ import { nitro } from 'nitro/vite'
 import { defineConfig } from 'vite'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
-const config = defineConfig({
+const config = defineConfig(({ mode }) => ({
   plugins: [
-    devtools(),
+    // Only enable devtools in development to avoid hydration mismatches
+    mode === 'development' && devtools(),
     nitro(),
     // this is the plugin that enables path aliases
     viteTsConfigPaths({
@@ -17,7 +18,7 @@ const config = defineConfig({
     tailwindcss(),
     tanstackStart(),
     viteReact(),
-  ],
-})
+  ].filter(Boolean),
+}))
 
 export default config

@@ -37,16 +37,19 @@ const ContentBar = ({
     },
     onError: () => {
       toast.error('You are not authorized')
-    }
+    },
   })
-
 
   return (
     <div className="border-t border-b py-2">
       <div className="flex justify-between items-center text-muted-foreground">
         <div className="flex gap-3">
           <div className="flex gap-0 items-center">
-            <Button onClick={() => toggleLike(articleID)} variant="link" size="lg">
+            <Button
+              onClick={() => toggleLike(articleID)}
+              variant="link"
+              size="lg"
+            >
               <HugeiconsIcon
                 className={`size-5
                   ${isLiked ? 'text-gray-900 fill-gray-600' : ''}`}

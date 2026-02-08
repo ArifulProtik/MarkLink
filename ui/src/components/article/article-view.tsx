@@ -1,8 +1,7 @@
 import { useCallback, useRef } from 'react'
-import Editor from '../Editor/editor'
-import { useArticleEditor } from '../Editor/use-editor'
 import ContentBar from './content-bar'
 import CommentView from './comment-view'
+import { SafeHtmlRenderer } from './safe-html-renderer'
 import type { User } from 'better-auth'
 import type { SingleArticleResponse } from '@/lib/types'
 import { formatSmartTime } from '@/lib/dyajs'
@@ -22,14 +21,12 @@ const ArticleView = ({ article }: ArticleViewProps) => {
     })
   }, [])
 
-  const editor = useArticleEditor({
-    content: article.content,
-    editable: false,
-  })
   return (
     <main className="max-w-2xl mx-auto px-3 pt-8">
       <div className="flex flex-col gap-6">
-        <h1 className="text-4xl leading-tight font-bold">{article.title}</h1>
+        <h1 className="text-4xl leading-tight font-bold font-sans">
+          {article.title}
+        </h1>
         {article.author && (
           <div className="flex items-center gap-3">
             <img
@@ -39,7 +36,10 @@ const ArticleView = ({ article }: ArticleViewProps) => {
             />
             <p className="text-sm font-medium">{article.author.name}</p>
             <span className="text-muted-foreground">&middot;</span>
-            <p className="text-sm text-muted-foreground">
+            <p
+              className="text-sm text-muted-foreground"
+              suppressHydrationWarning
+            >
               {formatSmartTime(article.createdAt)}
             </p>
           </div>
@@ -58,9 +58,7 @@ const ArticleView = ({ article }: ArticleViewProps) => {
           articleID={article.id}
         />
 
-        <div>
-          <Editor editor={editor} />
-        </div>
+        <SafeHtmlRenderer htmlContent={article.content} />
         <ContentBar
           likesCount={article.likesCount}
           authorID={article.author_id}

@@ -27,6 +27,7 @@
     "drizzle-zod": "^0.8.3",
     "env-var": "^7.5.0",
     "ioredis": "^5.9.2",
+    "isomorphic-dompurify": "^3.0.0-rc.2",
     "nanoid": "^5.1.6",
     "postgres": "^3.4.8",
     "uuid": "^13.0.0",

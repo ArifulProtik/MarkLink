@@ -7,6 +7,7 @@ import type { User } from 'better-auth'
 import { db } from '@backend/db/index.ts'
 import { article, like } from '@backend/db/schema/article.ts'
 import { user as userSchema } from '@backend/db/schema/auth.ts'
+import { sanitizeHtml } from '@backend/lib/sanitize-html.ts'
 import {
   and,
   count,
@@ -32,10 +33,13 @@ const GenerateSlug = (title: string) => {
 
 export const CreatePost = async (body: CreatePostBodyT, user: User) => {
   try {
+    const { content, ...rest } = body
+    const sanitizedContent = sanitizeHtml(content)
     const [newArticle] = await db
       .insert(article)
       .values({
-        ...body,
+        ...rest,
+        content: sanitizedContent,
         slug: GenerateSlug(body.title),
         author_id: user.id,
       })
@@ -44,7 +48,7 @@ export const CreatePost = async (body: CreatePostBodyT, user: User) => {
       throw new InternalServerError('Failed to create post')
     }
     const result = await db.query.article.findFirst({
-      where: eq(article.id, newArticle!.insertedId),
+      where: eq(article.id, newArticle.insertedId),
       with: {
         author: {
           columns: {

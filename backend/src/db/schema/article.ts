@@ -50,6 +50,23 @@ export const like = pgTable(
   ],
 )
 
+export const commentLike = pgTable(
+  'comment_like',
+  {
+    ...baseColumns,
+    liker_id: text('liker_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    comment_id: text('comment_id')
+      .notNull()
+      .references(() => comment.id, { onDelete: 'cascade' }),
+  },
+  t => [
+    uniqueIndex('unique_comment_like').on(t.comment_id, t.liker_id),
+    index('comment_id_idx').on(t.comment_id),
+  ],
+)
+
 export const articleRelations = relations(article, ({ one, many }) => ({
   author: one(user, {
     fields: [article.author_id],
@@ -59,7 +76,7 @@ export const articleRelations = relations(article, ({ one, many }) => ({
   likes: many(like),
 }))
 
-export const commentRelations = relations(comment, ({ one }) => ({
+export const commentRelations = relations(comment, ({ one, many }) => ({
   author: one(user, {
     fields: [comment.author_id],
     references: [user.id],
@@ -68,6 +85,7 @@ export const commentRelations = relations(comment, ({ one }) => ({
     fields: [comment.article_id],
     references: [article.id],
   }),
+  likes: many(commentLike),
 }))
 
 export const likeRelations = relations(like, ({ one }) => ({
@@ -78,5 +96,16 @@ export const likeRelations = relations(like, ({ one }) => ({
   article: one(article, {
     fields: [like.article_id],
     references: [article.id],
+  }),
+}))
+
+export const commentLikeRelations = relations(commentLike, ({ one }) => ({
+  liker: one(user, {
+    fields: [commentLike.liker_id],
+    references: [user.id],
+  }),
+  comment: one(comment, {
+    fields: [commentLike.comment_id],
+    references: [comment.id],
   }),
 }))

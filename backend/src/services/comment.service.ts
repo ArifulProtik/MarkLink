@@ -1,14 +1,19 @@
 import type {
   CreateCommentBodyT,
   GetCommentsQueryT,
+  ToggleCommentLikeBodyT,
   UpdateCommentBodyT,
 } from '@backend/shared/comment.model.ts'
 import type { User } from 'better-auth'
 import { db } from '@backend/db/index.ts'
-import { comment } from '@backend/db/schema/article.ts'
+import { comment, commentLike } from '@backend/db/schema/article.ts'
+import { user as userSchema } from '@backend/db/schema/auth.ts'
 import {
+  and,
+  count,
   desc,
   eq,
+  getTableColumns,
   sql,
 } from 'drizzle-orm'
 import {
@@ -48,31 +53,63 @@ export const CreateComment = async (body: CreateCommentBodyT, user: User) => {
   }
 }
 
-export const GetComments = async (articleId: string, query: GetCommentsQueryT) => {
+export const GetComments = async (
+  articleId: string,
+  query: GetCommentsQueryT,
+  user: User | null,
+) => {
   try {
-    const data = await db.query.comment.findMany({
-      where: eq(comment.article_id, articleId),
-      limit: query.limit,
-      offset: query.offset,
-      orderBy: [desc(comment.createdAt)],
-      with: {
+    const commentsData = await db
+      .select({
+        ...getTableColumns(comment),
         author: {
-          columns: {
-            id: true,
-            name: true,
-            image: true,
-            username: true,
-          },
+          id: userSchema.id,
+          name: userSchema.name,
+          image: userSchema.image,
+          username: userSchema.username,
         },
-      },
-    })
+        likesCount: count(commentLike.id),
+      })
+      .from(comment)
+      .leftJoin(userSchema, eq(comment.author_id, userSchema.id))
+      .leftJoin(commentLike, eq(comment.id, commentLike.comment_id))
+      .where(eq(comment.article_id, articleId))
+      .groupBy(comment.id, userSchema.id)
+      .limit(query.limit)
+      .offset(query.offset)
+      .orderBy(desc(comment.createdAt))
 
-    const [total] = await db.select({ count: sql<number>`count(*)` })
+    const commentsWithLikeStatus = await Promise.all(
+      commentsData.map(async (c) => {
+        let isLikedByUser = false
+        if (user) {
+          const [existingLike] = await db
+            .select()
+            .from(commentLike)
+            .where(
+              and(
+                eq(commentLike.comment_id, c.id),
+                eq(commentLike.liker_id, user.id),
+              ),
+            )
+          if (existingLike) {
+            isLikedByUser = true
+          }
+        }
+        return {
+          ...c,
+          isLikedByUser,
+        }
+      }),
+    )
+
+    const [total] = await db
+      .select({ count: sql<number>`count(*)` })
       .from(comment)
       .where(eq(comment.article_id, articleId))
 
     return {
-      data,
+      data: commentsWithLikeStatus,
       total: Number(total?.count ?? 0),
       limit: query.limit,
       offset: query.offset,
@@ -138,5 +175,50 @@ export const DeleteComment = async (id: string, user: User) => {
       throw error
     }
     throw new InternalServerError('Failed to delete comment', error)
+  }
+}
+
+export const ToggleCommentLike = async (
+  body: ToggleCommentLikeBodyT,
+  user: User,
+) => {
+  try {
+    const existingComment = await db.query.comment.findFirst({
+      where: eq(comment.id, body.commentId),
+    })
+
+    if (!existingComment) {
+      throw new NotFoundError('Comment not found')
+    }
+
+    const [existingLike] = await db
+      .select()
+      .from(commentLike)
+      .where(
+        and(
+          eq(commentLike.comment_id, body.commentId),
+          eq(commentLike.liker_id, user.id),
+        ),
+      )
+
+    if (existingLike) {
+      await db
+        .delete(commentLike)
+        .where(eq(commentLike.id, existingLike.id))
+      return { liked: false }
+    }
+
+    await db.insert(commentLike).values({
+      comment_id: body.commentId,
+      liker_id: user.id,
+    })
+
+    return { liked: true }
+  }
+  catch (error) {
+    if (error instanceof NotFoundError) {
+      throw error
+    }
+    throw new InternalServerError('Failed to toggle comment like', error)
   }
 }

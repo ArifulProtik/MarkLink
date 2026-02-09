@@ -60,10 +60,7 @@ const ContentBar = ({
           </Button>
         </div>
         <div className="flex gap-3">
-          <ArticleShareButton
-            slug={slug}
-            articleTitle={articleTitle}
-          />
+          <ArticleShareButton slug={slug} articleTitle={articleTitle} />
           <ArticleMoreButton
             articleID={articleID}
             authorID={authorID}

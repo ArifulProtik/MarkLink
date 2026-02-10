@@ -110,6 +110,9 @@
   .container-fluid {
     @apply mx-auto max-w-6xl px-4 w-full;
   }
+  .container-fluid-body {
+    @apply mx-auto max-w-4xl px-4 w-full;
+  }
 
   /* --- Tiptap & Prose Styles (The Medium "Look") --- */
   .tiptap {

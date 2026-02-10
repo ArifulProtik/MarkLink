@@ -29,6 +29,13 @@
       "when": 1770701571380,
       "tag": "0003_great_omega_sentinel",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1770708457238,
+      "tag": "0004_good_alex_power",
+      "breakpoints": true
     }
   ]
 }

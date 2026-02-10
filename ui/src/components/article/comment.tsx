@@ -26,7 +26,10 @@ const SingleComment = ({ comment, userID }: CommentProps) => {
           </Avatar>
           <div className="flex flex-col gap-0">
             <p className="text-sm font-semibold"> {comment.author?.name} </p>
-            <p className="text-sm text-muted-foreground">
+            <p
+              className="text-sm text-muted-foreground"
+              suppressHydrationWarning
+            >
               {formatSmartTime(comment.createdAt)}
             </p>
           </div>

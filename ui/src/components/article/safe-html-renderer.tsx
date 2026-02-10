@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef } from 'react'
+import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/atom-one-dark.css'
 import DOMPurify from 'dompurify'
@@ -20,11 +20,17 @@ export const SafeHtmlRenderer = ({
   const containerRef = useRef<HTMLDivElement>(null)
   const contentVersionRef = useRef(0)
   const lastHighlightedVersionRef = useRef(-1)
+  const [isClient, setIsClient] = useState(false)
+
+  useLayoutEffect(() => {
+    setIsClient(true)
+  }, [])
 
   // Client-side sanitization as a last line of defense
   const safeHtml = useMemo(() => {
+    if (!isClient) return htmlContent
     return DOMPurify.sanitize(htmlContent)
-  }, [htmlContent])
+  }, [htmlContent, isClient])
 
   useLayoutEffect(() => {
     contentVersionRef.current += 1

@@ -2,6 +2,7 @@ import { sanitizeHtml } from '@backend/lib/sanitize-html'
 import {
   queryOptions,
   useMutation,
+  useQuery,
   useQueryClient,
 } from '@tanstack/react-query'
 import { toast } from 'sonner'
@@ -69,14 +70,53 @@ export function useUpdateArticle() {
       if (error) throw error
       return res
     },
-    onSuccess: () => {
+    onSuccess: (article) => {
       toast.success('Article updated successfully')
       queryClient.invalidateQueries({
-        queryKey: ['article'],
+        queryKey: QUERY_KEYS.GET_ARTICLE(article.slug),
       })
     },
     onError: () => {
       toast.error('Failed to update article')
+    },
+  })
+}
+
+export const GetCommentsQuery = (articleId: string) => {
+  return useQuery({
+    queryKey: QUERY_KEYS.GET_COMMENTS(articleId),
+    queryFn: async () => {
+      const res = await client.api.v1.comments({ articleId }).get({
+        query: {
+          limit: 20,
+          offset: 0,
+        },
+      })
+      if (!res.data) throw new Error('not found')
+      return res.data
+    },
+  })
+}
+
+export const AddCommentMutation = (articleID: string) => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (content: string) => {
+      const { data, error } = await client.api.v1.comments.post({
+        article_id: articleID,
+        content,
+      })
+      if (error) throw error
+      return data
+    },
+    onSuccess: () => {
+      toast.success('Commented successfully.')
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.GET_COMMENTS(articleID),
+      })
+    },
+    onError: () => {
+      toast.error('Something went wrong.')
     },
   })
 }

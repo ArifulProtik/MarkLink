@@ -7,7 +7,6 @@ import {
   UserAdd02Icon,
 } from '@hugeicons/core-free-icons'
 import { useNavigate, useParams } from '@tanstack/react-router'
-import { Button } from '../ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -53,10 +52,13 @@ function ArticleMoreButton({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Button variant="link" className="text-foreground" size="lg">
-          <HugeiconsIcon className="size-5" icon={MoreHorizontalFreeIcons} />
-        </Button>
+      <DropdownMenuTrigger
+        className="cursor-pointer text-foreground hover:text-foreground/80
+          inline-flex items-center justify-center size-10 rounded-md
+          transition-colors"
+        aria-label="More options"
+      >
+        <HugeiconsIcon className="size-5" icon={MoreHorizontalFreeIcons} />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
         <DropdownMenuItem

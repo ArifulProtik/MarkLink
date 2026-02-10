@@ -20,6 +20,18 @@ export type Article = {
   updatedAt: Date
 }
 
+export type Comment = {
+  isLikedByUser: boolean
+  author: UserPublic | null
+  likesCount: number
+  content: string
+  author_id: string
+  article_id: string
+  id: string
+  createdAt: Date
+  updatedAt: Date
+}
+
 export type SingleArticleResponse = Article & {
   isLikedByUser: boolean
 }

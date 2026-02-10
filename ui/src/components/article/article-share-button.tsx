@@ -7,7 +7,6 @@ import {
   XingIcon,
 } from '@hugeicons/core-free-icons'
 import { toast } from 'sonner'
-import { Button } from '../ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,10 +19,7 @@ interface ArticleShareButtonProps {
   articleTitle: string
 }
 
-function ArticleShareButton({
-  slug,
-  articleTitle,
-}: ArticleShareButtonProps) {
+function ArticleShareButton({ slug, articleTitle }: ArticleShareButtonProps) {
   const shareUrl =
     typeof window !== 'undefined'
       ? `${window.location.origin}/article/${slug}`
@@ -63,10 +59,13 @@ function ArticleShareButton({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Button variant="link" className="text-foreground" size="lg">
-          <HugeiconsIcon className="size-5" icon={Share01Icon} />
-        </Button>
+      <DropdownMenuTrigger
+        className="cursor-pointer text-foreground hover:text-foreground/80
+          inline-flex items-center justify-center size-10 rounded-md
+          transition-colors"
+        aria-label="Share article"
+      >
+        <HugeiconsIcon className="size-5" icon={Share01Icon} />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
         <DropdownMenuItem className="cursor-pointer" onClick={handleCopyLink}>

@@ -16,7 +16,7 @@ function Editor({ editor }: EditorProps) {
     <>
       <EditorBubbleMenu editor={editor} />
       <EditorBlockMenu editor={editor} />
-      <EditorContent editor={editor} className="" />
+      <EditorContent editor={editor} />
     </>
   )
 }

@@ -4,7 +4,7 @@ import CommentView from './comment-view'
 import { SafeHtmlRenderer } from './safe-html-renderer'
 import type { User } from 'better-auth'
 import type { SingleArticleResponse } from '@/lib/types'
-import { formatSmartTime } from '@/lib/dyajs'
+import { formatSmartTime } from '@/lib/dayjs'
 
 interface ArticleViewProps {
   article: SingleArticleResponse

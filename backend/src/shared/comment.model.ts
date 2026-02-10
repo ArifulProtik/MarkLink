@@ -5,6 +5,8 @@ import { AuthorSchema } from './article.model.ts'
 
 export const CommentSchema = createSelectSchema(comment).extend({
   author: AuthorSchema,
+  likesCount: z.number().default(0),
+  isLikedByUser: z.boolean().optional(),
 })
 
 export type CommentT = z.infer<typeof CommentSchema>
@@ -39,3 +41,9 @@ export const GetCommentsQuery = z.object({
 })
 
 export type GetCommentsQueryT = z.infer<typeof GetCommentsQuery>
+
+export const ToggleCommentLikeBody = z.object({
+  commentId: z.string(),
+})
+
+export type ToggleCommentLikeBodyT = z.infer<typeof ToggleCommentLikeBody>

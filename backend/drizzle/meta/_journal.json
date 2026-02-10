@@ -15,6 +15,20 @@
       "when": 1769402358346,
       "tag": "0001_mighty_red_ghost",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1770614460268,
+      "tag": "0002_glorious_the_spike",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1770701571380,
+      "tag": "0003_great_omega_sentinel",
+      "breakpoints": true
     }
   ]
 }

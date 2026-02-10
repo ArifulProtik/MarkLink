@@ -120,3 +120,14 @@ export const AddCommentMutation = (articleID: string) => {
     },
   })
 }
+
+export const GetFeaturedArticlesQuery = () => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_FEATURED_POSTS],
+    queryFn: async () => {
+      const res = await client.api.v1.article.featured.get()
+      if (!res.data) throw new Error('not found')
+      return res.data
+    },
+  })
+}

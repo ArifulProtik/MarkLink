@@ -9,7 +9,7 @@ export type Article = {
   id: string
   slug: string
   title: string
-  content: string
+  content?: string
   preview_image: string
   preview_text: string
   likesCount: number

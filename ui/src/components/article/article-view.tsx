@@ -61,7 +61,7 @@ const ArticleView = ({ article, author }: ArticleViewProps) => {
           articleID={article.id}
         />
 
-        <SafeHtmlRenderer htmlContent={article.content} />
+        <SafeHtmlRenderer htmlContent={article.content!} />
         <ContentBar
           likesCount={article.likesCount}
           authorID={article.author_id}

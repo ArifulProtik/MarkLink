@@ -6,9 +6,5 @@ export const Route = createFileRoute('/_main/')({
 })
 
 function RouteComponent() {
-  const ctx = Route.useRouteContext()
-  if (!ctx.user) {
-    return <HomeComponent />
-  }
-  return <div>This is the main route! hello {ctx.user.name} </div>
+  return <HomeComponent />
 }

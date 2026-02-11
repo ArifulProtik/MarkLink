@@ -178,9 +178,9 @@ export default function HeroSection() {
         {/* Right Column: Illustration */}
         <div
           className="flex-1 relative w-full max-w-[400px] lg:max-w-none flex
-            justify-center hidden lg:block"
+            justify-center"
         >
-          <div className="relative w-full max-w-[350px]">
+          <div className="relative w-full max-w-[350px] hidden lg:block">
             {/* Glow effect behind illustration */}
             <div className="absolute inset-0 bg-primary/10 blur-3xl scale-125" />
 

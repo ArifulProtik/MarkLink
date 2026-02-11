@@ -14,7 +14,7 @@ export default function ArticleSection() {
     <div className="container-fluid-body py-12">
       <h2 className="text-2xl font-medium mb-8">For You</h2>
 
-      <div className="flex flex-col gap-8 mb-8">
+      <div className="flex flex-col mb-8 divide-y">
         {isLoading ? (
           <div>Loading...</div>
         ) : isError ? (

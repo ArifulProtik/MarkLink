@@ -1,4 +1,6 @@
 import { Link } from '@tanstack/react-router'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { FavouriteIcon } from '@hugeicons/core-free-icons'
 import type { Article } from '@/lib/types'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { simpleFormat } from '@/lib/dayjs'
@@ -10,7 +12,7 @@ interface ArticleCardProps {
 export default function ArticleCard({ article }: ArticleCardProps) {
   return (
     <Link to="/article/$slug" params={{ slug: article.slug }} className="group">
-      <div className="flex flex-col gap-4 h-full border-b pb-8 last:border-b-0">
+      <div className="flex flex-col gap-4 h-full py-8">
         <div className="flex items-center gap-2">
           <Avatar className="h-6 w-6">
             <AvatarImage src={article.author?.image || ''} />
@@ -30,8 +32,15 @@ export default function ArticleCard({ article }: ArticleCardProps) {
             </p>
             <div
               suppressHydrationWarning
-              className="mt-auto pt-2 text-sm text-muted-foreground"
+              className="mt-auto pt-2 text-sm text-muted-foreground flex gap-4"
             >
+              <span className="flex items-center gap-1">
+                <HugeiconsIcon
+                  icon={FavouriteIcon}
+                  className="size-4 fill-gray-600"
+                />
+                {article.likesCount}
+              </span>
               {simpleFormat(article.createdAt)}
             </div>
           </div>

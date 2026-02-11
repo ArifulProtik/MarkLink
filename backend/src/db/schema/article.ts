@@ -1,5 +1,6 @@
 import { relations } from 'drizzle-orm'
 import {
+  boolean,
   index,
   pgTable,
   text,
@@ -16,6 +17,8 @@ export const article = pgTable('article', {
   content: text('content').notNull(),
   slug: text('slug').notNull().unique(),
   tags: text('tags').array().notNull().default([]),
+  is_published: boolean('is_published').notNull().default(false),
+  is_featured: boolean('is_featured').notNull().default(false),
   author_id: text('author_id')
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),

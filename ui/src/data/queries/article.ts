@@ -27,6 +27,22 @@ export const GetArticleQueryOptions = (slug: string) =>
     },
   })
 
+export const GetArticlesQuery = (offset: number, limit: number) => {
+  return useQuery({
+    queryKey: ['articles', offset, limit],
+    queryFn: async () => {
+      const res = await client.api.v1.article.get({
+        query: {
+          limit,
+          offset,
+        },
+      })
+      if (!res.data) throw new Error('not found')
+      return res.data
+    },
+  })
+}
+
 export function useToggleArticleLike() {
   const queryClient = useQueryClient()
 
@@ -117,6 +133,17 @@ export const AddCommentMutation = (articleID: string) => {
     },
     onError: () => {
       toast.error('Something went wrong.')
+    },
+  })
+}
+
+export const GetFeaturedArticlesQuery = () => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_FEATURED_POSTS],
+    queryFn: async () => {
+      const res = await client.api.v1.article.featured.get()
+      if (!res.data) throw new Error('not found')
+      return res.data
     },
   })
 }

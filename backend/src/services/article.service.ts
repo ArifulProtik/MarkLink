@@ -8,14 +8,7 @@ import { db } from '@backend/db/index.ts'
 import { article, like } from '@backend/db/schema/article.ts'
 import { user as userSchema } from '@backend/db/schema/auth.ts'
 import { sanitizeHtml } from '@backend/lib/sanitize-html.ts'
-import {
-  and,
-  count,
-  desc,
-  eq,
-  getTableColumns,
-  sql,
-} from 'drizzle-orm'
+import { and, count, desc, eq, getTableColumns, sql } from 'drizzle-orm'
 import { v7 as uuidv7 } from 'uuid'
 import {
   ForbiddenError,
@@ -64,17 +57,17 @@ export const CreatePost = async (body: CreatePostBodyT, user: User) => {
       ...result,
       likesCount: 0,
     }
-  }
-  catch (error) {
+  } catch (error) {
     throw new InternalServerError('Failed to create post', error)
   }
 }
 
 export const GetPosts = async (query: GetPostsQueryT) => {
   try {
+    const { content, ...articleColumns } = getTableColumns(article)
     const data = await db
       .select({
-        ...getTableColumns(article),
+        ...articleColumns,
         author: {
           id: userSchema.id,
           name: userSchema.name,
@@ -101,8 +94,7 @@ export const GetPosts = async (query: GetPostsQueryT) => {
       limit: query.limit,
       offset: query.offset,
     }
-  }
-  catch (error) {
+  } catch (error) {
     throw new InternalServerError('Failed to fetch posts', error)
   }
 }
@@ -135,10 +127,7 @@ export const GetPostBySlug = async (slug: string, user: User | null) => {
       const [existingLike] = await db
         .select()
         .from(like)
-        .where(and(
-          eq(like.article_id, post.id),
-          eq(like.liker_id, user.id),
-        ))
+        .where(and(eq(like.article_id, post.id), eq(like.liker_id, user.id)))
       if (existingLike) {
         isLikedByUser = true
       }
@@ -148,8 +137,7 @@ export const GetPostBySlug = async (slug: string, user: User | null) => {
       ...post,
       isLikedByUser,
     }
-  }
-  catch (error) {
+  } catch (error) {
     if (error instanceof NotFoundError) {
       throw error
     }
@@ -185,8 +173,7 @@ export const UpdatePost = async (
       .returning()
 
     return updatedPost
-  }
-  catch (error) {
+  } catch (error) {
     if (error instanceof NotFoundError || error instanceof ForbiddenError) {
       throw error
     }
@@ -211,11 +198,37 @@ export const DeletePost = async (id: string, user: User) => {
     await db.delete(article).where(eq(article.id, id))
 
     return { success: true, message: 'Article deleted successfully' }
-  }
-  catch (error) {
+  } catch (error) {
     if (error instanceof NotFoundError || error instanceof ForbiddenError) {
       throw error
     }
     throw new InternalServerError('Failed to delete post', error)
+  }
+}
+
+export const GetFeaturedPosts = async () => {
+  try {
+    const { content, ...articleColumns } = getTableColumns(article)
+    const data = await db
+      .select({
+        ...articleColumns,
+        author: {
+          id: userSchema.id,
+          name: userSchema.name,
+          image: userSchema.image,
+          username: userSchema.username,
+        },
+        likesCount: count(like.id),
+      })
+      .from(article)
+      .leftJoin(userSchema, eq(article.author_id, userSchema.id))
+      .leftJoin(like, eq(article.id, like.article_id))
+      .where(eq(article.is_featured, true))
+      .groupBy(article.id, userSchema.id)
+      .limit(4)
+      .orderBy(desc(article.createdAt))
+    return data
+  } catch (error) {
+    throw new InternalServerError('Failed to fetch featured posts', error)
   }
 }

@@ -1,5 +1,6 @@
 import HeroSection from './hero-section'
 import FeaturedSection from './featured-section'
+import ArticleSectio from './article-section'
 import { useUser } from '@/hooks/use-user'
 
 export function HomeComponent() {
@@ -8,6 +9,7 @@ export function HomeComponent() {
     <>
       {!user && <HeroSection />}
       <FeaturedSection />
+      <ArticleSectio />
     </>
   )
 }

@@ -88,10 +88,13 @@ function DropdownMenuItem({
   className,
   inset,
   variant = 'default',
+  asChild,
+  children,
   ...props
 }: MenuPrimitive.Item.Props & {
   inset?: boolean
   variant?: 'default' | 'destructive'
+  asChild?: boolean
 }) {
   return (
     <MenuPrimitive.Item
@@ -113,8 +116,16 @@ function DropdownMenuItem({
         [&_svg]:shrink-0`,
         className,
       )}
+      render={
+        asChild
+          ? (renderProps) =>
+              React.cloneElement(children as React.ReactElement, renderProps)
+          : undefined
+      }
       {...props}
-    />
+    >
+      {asChild ? null : children}
+    </MenuPrimitive.Item>
   )
 }
 

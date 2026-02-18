@@ -4,10 +4,10 @@ import { createRouter } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
 import { createQueryClient } from './lib/query-client'
 import type { QueryClient } from '@tanstack/react-query'
-import type { User } from 'better-auth'
+import type { AppUser } from './lib/types'
 
 export type AppRouteContext = {
-  user: User | null | undefined
+  user: AppUser | null | undefined
   queryClient: QueryClient
 }
 

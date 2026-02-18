@@ -1,6 +1,7 @@
 import type {
   CreatePostBodyT,
   GetPostsQueryT,
+  GetUserArticlesQueryT,
   UpdatePostBodyT,
 } from '@backend/shared/article.model.ts'
 import type { User } from 'better-auth'
@@ -230,5 +231,50 @@ export const GetFeaturedPosts = async () => {
     return data
   } catch (error) {
     throw new InternalServerError('Failed to fetch featured posts', error)
+  }
+}
+
+export const GetUserArticles = async (
+  userId: string,
+  query: GetUserArticlesQueryT,
+) => {
+  try {
+    const { content, ...articleColumns } = getTableColumns(article)
+    const limit = Math.min(query.limit, 100)
+    const offset = Math.max(query.offset, 0)
+
+    const data = await db
+      .select({
+        ...articleColumns,
+        author: {
+          id: userSchema.id,
+          name: userSchema.name,
+          image: userSchema.image,
+          username: userSchema.username,
+        },
+        likesCount: count(like.id),
+      })
+      .from(article)
+      .leftJoin(userSchema, eq(article.author_id, userSchema.id))
+      .leftJoin(like, eq(article.id, like.article_id))
+      .where(eq(article.author_id, userId))
+      .groupBy(article.id, userSchema.id)
+      .limit(limit)
+      .offset(offset)
+      .orderBy(desc(article.createdAt))
+
+    const [totalResult] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(article)
+      .where(eq(article.author_id, userId))
+
+    return {
+      data,
+      total: Number(totalResult?.count ?? 0),
+      limit,
+      offset,
+    }
+  } catch (error) {
+    throw new InternalServerError('Failed to fetch user articles', error)
   }
 }

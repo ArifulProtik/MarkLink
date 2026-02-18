@@ -13,6 +13,7 @@ import { Route as WriteRouteImport } from './routes/write'
 import { Route as MainRouteRouteImport } from './routes/_main/route'
 import { Route as MainIndexRouteImport } from './routes/_main/index'
 import { Route as ArticleEditSlugRouteImport } from './routes/article.edit.$slug'
+import { Route as MainUUsernameRouteImport } from './routes/_main/u.$username'
 import { Route as MainArticleSlugRouteImport } from './routes/_main/article/$slug'
 
 const WriteRoute = WriteRouteImport.update({
@@ -34,6 +35,11 @@ const ArticleEditSlugRoute = ArticleEditSlugRouteImport.update({
   path: '/article/edit/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MainUUsernameRoute = MainUUsernameRouteImport.update({
+  id: '/u/$username',
+  path: '/u/$username',
+  getParentRoute: () => MainRouteRoute,
+} as any)
 const MainArticleSlugRoute = MainArticleSlugRouteImport.update({
   id: '/article/$slug',
   path: '/article/$slug',
@@ -44,12 +50,14 @@ export interface FileRoutesByFullPath {
   '/': typeof MainIndexRoute
   '/write': typeof WriteRoute
   '/article/$slug': typeof MainArticleSlugRoute
+  '/u/$username': typeof MainUUsernameRoute
   '/article/edit/$slug': typeof ArticleEditSlugRoute
 }
 export interface FileRoutesByTo {
   '/write': typeof WriteRoute
   '/': typeof MainIndexRoute
   '/article/$slug': typeof MainArticleSlugRoute
+  '/u/$username': typeof MainUUsernameRoute
   '/article/edit/$slug': typeof ArticleEditSlugRoute
 }
 export interface FileRoutesById {
@@ -58,19 +66,26 @@ export interface FileRoutesById {
   '/write': typeof WriteRoute
   '/_main/': typeof MainIndexRoute
   '/_main/article/$slug': typeof MainArticleSlugRoute
+  '/_main/u/$username': typeof MainUUsernameRoute
   '/article/edit/$slug': typeof ArticleEditSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/write' | '/article/$slug' | '/article/edit/$slug'
+  fullPaths:
+    | '/'
+    | '/write'
+    | '/article/$slug'
+    | '/u/$username'
+    | '/article/edit/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/write' | '/' | '/article/$slug' | '/article/edit/$slug'
+  to: '/write' | '/' | '/article/$slug' | '/u/$username' | '/article/edit/$slug'
   id:
     | '__root__'
     | '/_main'
     | '/write'
     | '/_main/'
     | '/_main/article/$slug'
+    | '/_main/u/$username'
     | '/article/edit/$slug'
   fileRoutesById: FileRoutesById
 }
@@ -110,6 +125,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArticleEditSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_main/u/$username': {
+      id: '/_main/u/$username'
+      path: '/u/$username'
+      fullPath: '/u/$username'
+      preLoaderRoute: typeof MainUUsernameRouteImport
+      parentRoute: typeof MainRouteRoute
+    }
     '/_main/article/$slug': {
       id: '/_main/article/$slug'
       path: '/article/$slug'
@@ -123,11 +145,13 @@ declare module '@tanstack/react-router' {
 interface MainRouteRouteChildren {
   MainIndexRoute: typeof MainIndexRoute
   MainArticleSlugRoute: typeof MainArticleSlugRoute
+  MainUUsernameRoute: typeof MainUUsernameRoute
 }
 
 const MainRouteRouteChildren: MainRouteRouteChildren = {
   MainIndexRoute: MainIndexRoute,
   MainArticleSlugRoute: MainArticleSlugRoute,
+  MainUUsernameRoute: MainUUsernameRoute,
 }
 
 const MainRouteRouteWithChildren = MainRouteRoute._addFileChildren(

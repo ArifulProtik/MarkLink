@@ -5,11 +5,13 @@ import {
   GetFeaturedPosts,
   GetPostBySlug,
   GetPosts,
+  GetUserArticles,
   UpdatePost,
 } from '@backend/services/article.service.ts'
 import {
   CreatePostBody,
   GetPostsQuery,
+  GetUserArticlesQuery,
   UpdatePostBody,
 } from '@backend/shared/article.model.ts'
 import { Elysia } from 'elysia'
@@ -44,5 +46,14 @@ export const articleController = new Elysia({ prefix: '/article' })
     async ({ params: { id }, user }) => await DeletePost(id, user),
     {
       isAuth: true,
+    },
+  )
+
+  .get(
+    '/user/:id',
+    async ({ params: { id }, query }) => await GetUserArticles(id, query),
+    {
+      query: GetUserArticlesQuery,
+      isAuthOptional: true,
     },
   )

@@ -8,23 +8,27 @@ import { commentController } from './controllers/comment.controller.ts'
 import { likeController } from './controllers/like.controller.ts'
 import { uploadController } from './controllers/upload.controller.ts'
 import { auth } from './lib/auth.ts'
+import { UserController } from './controllers/user.controller.ts'
 
 export const app = new Elysia({
   prefix: '/api/v1',
 })
-  .use(logger({
-    level: 'error',
-  }))
+  .use(
+    logger({
+      level: 'error',
+    }),
+  )
   .use(cors())
   .use(serverTiming())
-  .use(openapi(
-    {
+  .use(
+    openapi({
       provider: 'scalar',
-    },
-  ))
+    }),
+  )
   .mount(auth.handler)
   .use(uploadController)
   .use(articleController)
+  .use(UserController)
   .use(commentController)
   .use(likeController)
   .get('/health', () => {

@@ -232,3 +232,29 @@ export const GetFeaturedPosts = async () => {
     throw new InternalServerError('Failed to fetch featured posts', error)
   }
 }
+
+export const GetUserArticles = async (userId: string) => {
+  try {
+    const { content, ...articleColumns } = getTableColumns(article)
+    const data = await db
+      .select({
+        ...articleColumns,
+        author: {
+          id: userSchema.id,
+          name: userSchema.name,
+          image: userSchema.image,
+          username: userSchema.username,
+        },
+        likesCount: count(like.id),
+      })
+      .from(article)
+      .leftJoin(userSchema, eq(article.author_id, userSchema.id))
+      .leftJoin(like, eq(article.id, like.article_id))
+      .where(eq(article.author_id, userId))
+      .groupBy(article.id, userSchema.id)
+      .orderBy(desc(article.createdAt))
+    return data
+  } catch (error) {
+    throw new InternalServerError('Failed to fetch user articles', error)
+  }
+}

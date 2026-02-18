@@ -3,10 +3,10 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { PencilEdit02Icon } from '@hugeicons/core-free-icons'
 import { GetStartedBtn } from '../home/get-started-btn'
 import { AvaterBtn } from '../home/avater-btn'
-import type { User } from 'better-auth'
+import type { AppUser } from '@/lib/types'
 
 type MainHeaderProps = {
-  User: User | null | undefined
+  User: AppUser | null | undefined
 }
 
 export function MainHeader({ User }: MainHeaderProps) {

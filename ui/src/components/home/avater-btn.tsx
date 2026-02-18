@@ -1,4 +1,4 @@
-import { useRouter } from '@tanstack/react-router'
+import { Link, useRouter } from '@tanstack/react-router'
 import {
   Logout01Icon,
   QuillWrite02Icon,
@@ -17,10 +17,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
-import type { User } from 'better-auth'
+import type { AppUser } from '@/lib/types'
 
 type AvaterBtnProps = {
-  User: User
+  User: AppUser
 }
 
 export const AvaterBtn = ({ User }: AvaterBtnProps) => {
@@ -46,7 +46,7 @@ export const AvaterBtn = ({ User }: AvaterBtnProps) => {
             <AvatarFallback></AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-40 text-base !important">
+        <DropdownMenuContent className="w-40">
           <DropdownMenuGroup>
             <DropdownMenuLabel className="text-foreground font-semibold">
               {User.name}
@@ -60,11 +60,17 @@ export const AvaterBtn = ({ User }: AvaterBtnProps) => {
               Write
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <HugeiconsIcon
-                icon={UserAccountIcon}
-                className="text-amber-500"
-              />{' '}
-              Profile
+              <Link
+                to="/u/$username"
+                params={{ username: User.username }}
+                className="flex items-center gap-2"
+              >
+                <HugeiconsIcon
+                  icon={UserAccountIcon}
+                  className="text-amber-500"
+                />
+                Profile
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
               <HugeiconsIcon icon={Setting07Icon} className="text-green-600" />{' '}

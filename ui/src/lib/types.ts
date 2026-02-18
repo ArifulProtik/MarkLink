@@ -1,3 +1,9 @@
+import type { User } from 'better-auth'
+
+export type AppUser = User & {
+  username: string
+}
+
 export type UserPublic = {
   id: string
   name: string

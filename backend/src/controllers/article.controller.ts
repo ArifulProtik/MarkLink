@@ -5,6 +5,7 @@ import {
   GetFeaturedPosts,
   GetPostBySlug,
   GetPosts,
+  GetUserArticles,
   UpdatePost,
 } from '@backend/services/article.service.ts'
 import {
@@ -46,3 +47,7 @@ export const articleController = new Elysia({ prefix: '/article' })
       isAuth: true,
     },
   )
+
+  .get('/user/:id', async ({ params: { id } }) => await GetUserArticles(id), {
+    isAuthOptional: true,
+  })

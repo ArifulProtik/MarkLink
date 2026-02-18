@@ -11,11 +11,12 @@ import { getAuthSession } from '@ui/data/server-auth'
 import { Toaster } from '@ui/components/ui/sonner'
 import appCss from '../styles.css?url'
 import type { AppRouteContext } from '@/router'
+import type { AppUser } from '@/lib/types'
 
 export const Route = createRootRouteWithContext<AppRouteContext>()({
   beforeLoad: async () => {
     const auth = await getAuthSession()
-    return { user: auth.data?.user }
+    return { user: auth.data?.user as AppUser | undefined }
   },
   head: () => ({
     links: [

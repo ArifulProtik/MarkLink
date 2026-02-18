@@ -5,14 +5,15 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { nanoid } from 'nanoid'
 
 export const auth = betterAuth({
-  database: drizzleAdapter(
-    db,
-    { provider: 'pg' },
-  ),
+  database: drizzleAdapter(db, { provider: 'pg' }),
   socialProviders: {
     github: {
       clientId: config.GITHUB_CLIENT_ID,
       clientSecret: config.GITHUB_CLIENT_SECRET,
+    },
+    google: {
+      clientId: config.GOOGLE_CLIENT_ID,
+      clientSecret: config.GOOGLE_CLIENT_SECRET,
     },
   },
   trustedOrigins: [config.UI_CLIENT_URL],

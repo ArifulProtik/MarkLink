@@ -3,11 +3,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Button } from '../ui/button'
 import { Textarea } from '../ui/textarea'
 import { Spinner } from '../ui/spinner'
-import type { User } from 'better-auth'
+import type { AppUser } from '@/lib/types'
 import { AddCommentMutation } from '@/data/queries/article'
 
 interface AddCommentProps {
-  user: User
+  user: AppUser
   article_id: string
 }
 

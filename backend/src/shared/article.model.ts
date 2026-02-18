@@ -53,3 +53,10 @@ export const GetPostsQuery = z.object({
 })
 
 export type GetPostsQueryT = z.infer<typeof GetPostsQuery>
+
+export const GetUserArticlesQuery = z.object({
+  limit: z.number().min(1).max(100).default(20),
+  offset: z.number().min(0).default(0),
+})
+
+export type GetUserArticlesQueryT = z.infer<typeof GetUserArticlesQuery>

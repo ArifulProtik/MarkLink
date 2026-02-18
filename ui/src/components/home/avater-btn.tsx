@@ -59,11 +59,11 @@ export const AvaterBtn = ({ User }: AvaterBtnProps) => {
               />{' '}
               Write
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem asChild>
               <Link
                 to="/u/$username"
                 params={{ username: User.username }}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 w-full"
               >
                 <HugeiconsIcon
                   icon={UserAccountIcon}

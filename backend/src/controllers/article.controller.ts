@@ -11,6 +11,7 @@ import {
 import {
   CreatePostBody,
   GetPostsQuery,
+  GetUserArticlesQuery,
   UpdatePostBody,
 } from '@backend/shared/article.model.ts'
 import { Elysia } from 'elysia'
@@ -48,6 +49,11 @@ export const articleController = new Elysia({ prefix: '/article' })
     },
   )
 
-  .get('/user/:id', async ({ params: { id } }) => await GetUserArticles(id), {
-    isAuthOptional: true,
-  })
+  .get(
+    '/user/:id',
+    async ({ params: { id }, query }) => await GetUserArticles(id, query),
+    {
+      query: GetUserArticlesQuery,
+      isAuthOptional: true,
+    },
+  )

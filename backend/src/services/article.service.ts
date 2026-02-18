@@ -1,6 +1,7 @@
 import type {
   CreatePostBodyT,
   GetPostsQueryT,
+  GetUserArticlesQueryT,
   UpdatePostBodyT,
 } from '@backend/shared/article.model.ts'
 import type { User } from 'better-auth'
@@ -233,9 +234,15 @@ export const GetFeaturedPosts = async () => {
   }
 }
 
-export const GetUserArticles = async (userId: string) => {
+export const GetUserArticles = async (
+  userId: string,
+  query: GetUserArticlesQueryT,
+) => {
   try {
     const { content, ...articleColumns } = getTableColumns(article)
+    const limit = Math.min(query.limit, 100)
+    const offset = Math.max(query.offset, 0)
+
     const data = await db
       .select({
         ...articleColumns,
@@ -252,8 +259,21 @@ export const GetUserArticles = async (userId: string) => {
       .leftJoin(like, eq(article.id, like.article_id))
       .where(eq(article.author_id, userId))
       .groupBy(article.id, userSchema.id)
+      .limit(limit)
+      .offset(offset)
       .orderBy(desc(article.createdAt))
-    return data
+
+    const [totalResult] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(article)
+      .where(eq(article.author_id, userId))
+
+    return {
+      data,
+      total: Number(totalResult?.count ?? 0),
+      limit,
+      offset,
+    }
   } catch (error) {
     throw new InternalServerError('Failed to fetch user articles', error)
   }

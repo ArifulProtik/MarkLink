@@ -10,8 +10,6 @@ export const GetUserWithUsername = async (username: string) => {
       columns: {
         id: true,
         name: true,
-        email: false,
-        emailVerified: false,
         username: true,
         image: true,
       },
@@ -21,6 +19,9 @@ export const GetUserWithUsername = async (username: string) => {
     }
     return userData
   } catch (error) {
+    if (error instanceof NotFoundError) {
+      throw error
+    }
     throw new InternalServerError('Failed to fetch user', error)
   }
 }

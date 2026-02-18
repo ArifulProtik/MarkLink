@@ -7,5 +7,5 @@ export const Route = createFileRoute('/_main/u/$username')({
 
 function RouteComponent() {
   const { username } = Route.useParams()
-  return <ProfileView Username={username} />
+  return <ProfileView username={username} />
 }

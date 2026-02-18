@@ -55,8 +55,15 @@ export const GetPostsQuery = z.object({
 export type GetPostsQueryT = z.infer<typeof GetPostsQuery>
 
 export const GetUserArticlesQuery = z.object({
-  limit: z.number().min(1).max(100).default(20),
-  offset: z.number().min(0).default(0),
+  limit: z.string().optional().transform((val) => {
+    const parsed = Number.parseInt(val ?? '', 10)
+    const bounded = Number.isNaN(parsed) ? 20 : parsed
+    return Math.min(Math.max(bounded, 1), 100)
+  }),
+  offset: z.string().optional().transform((val) => {
+    const parsed = Number.parseInt(val ?? '', 10)
+    return Number.isNaN(parsed) ? 0 : Math.max(parsed, 0)
+  }),
 })
 
 export type GetUserArticlesQueryT = z.infer<typeof GetUserArticlesQuery>

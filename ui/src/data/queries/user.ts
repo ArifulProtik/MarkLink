@@ -17,7 +17,7 @@ export const useGetUserArticlesQuery = (userId: string) =>
     queryKey: QUERY_KEYS.GET_USER_ARTICLES(userId),
     queryFn: async () => {
       const res = await client.api.v1.article.user({ id: userId }).get({
-        query: { limit: 20, offset: 0 },
+        query: { limit: 10, offset: 0 },
       })
       if (!res.data) throw new Error('Not found')
       return res.data

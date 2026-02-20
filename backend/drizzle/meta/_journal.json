@@ -5,36 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1769156284711,
-      "tag": "0000_broken_iron_man",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1769402358346,
-      "tag": "0001_mighty_red_ghost",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1770614460268,
-      "tag": "0002_glorious_the_spike",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1770701571380,
-      "tag": "0003_great_omega_sentinel",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1770708457238,
-      "tag": "0004_good_alex_power",
+      "when": 1771571403169,
+      "tag": "0000_many_imperial_guard",
       "breakpoints": true
     }
   ]

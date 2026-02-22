@@ -5,10 +5,10 @@ export type AppUser = User & {
 }
 
 export type UserPublic = {
-  id: string
-  name: string
-  image: string | null
-  username: string
+  user: AppUser
+  followerCount: number
+  isFollowed: boolean
+  isFriend: boolean
 }
 
 export type Article = {

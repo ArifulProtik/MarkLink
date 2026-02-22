@@ -1,4 +1,4 @@
-import { Link, useRouter } from '@tanstack/react-router'
+import { useRouter } from '@tanstack/react-router'
 import {
   Logout01Icon,
   QuillWrite02Icon,
@@ -59,18 +59,20 @@ export const AvaterBtn = ({ User }: AvaterBtnProps) => {
               />{' '}
               Write
             </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link
-                to="/u/$username"
-                params={{ username: User.username }}
-                className="flex items-center gap-2 w-full"
-              >
-                <HugeiconsIcon
-                  icon={UserAccountIcon}
-                  className="text-amber-500"
-                />
-                Profile
-              </Link>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => {
+                router.navigate({
+                  to: '/u/$username',
+                  params: { username: User.username },
+                })
+              }}
+            >
+              <HugeiconsIcon
+                icon={UserAccountIcon}
+                className="text-amber-500"
+              />
+              Profile
             </DropdownMenuItem>
             <DropdownMenuItem>
               <HugeiconsIcon icon={Setting07Icon} className="text-green-600" />{' '}

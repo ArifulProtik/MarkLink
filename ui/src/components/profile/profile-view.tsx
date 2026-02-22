@@ -8,7 +8,7 @@ interface ProfileViewProps {
 
 export default function ProfileView({ username }: ProfileViewProps) {
   const {
-    data: user,
+    data,
     isLoading: isLoadingUser,
     isError,
   } = useGetUserWithUserNameQuery(username)
@@ -30,14 +30,14 @@ export default function ProfileView({ username }: ProfileViewProps) {
           {isLoadingUser ? (
             <div className="flex items-center justify-center">Loading...</div>
           ) : (
-            user && <ProfileSection user={user} />
+            data && <ProfileSection data={data} />
           )}
         </div>
         <div
           className="flex-1 md:py-4 py-0 md:border-l md:pl-6 md:border-t-0
             border-t"
         >
-          {!isLoadingUser && user && <UserArticle userID={user.id} />}
+          {!isLoadingUser && data && <UserArticle userID={data.user.id} />}
         </div>
       </div>
     </div>

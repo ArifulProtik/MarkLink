@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import type { UserPublic } from '@/lib/types'
 
 interface ProfileSectionProps {
-  user: UserPublic
+  data: UserPublic
 }
 
 function getInitials(name: string | null): string {
@@ -17,16 +17,16 @@ function getInitials(name: string | null): string {
   )
 }
 
-export default function ProfileSection({ user }: ProfileSectionProps) {
+export default function ProfileSection({ data }: ProfileSectionProps) {
   return (
     <div className="flex flex-col gap-3 md:items-start items-center w-full">
       <Avatar className="size-42">
-        <AvatarImage src={user.image || ''} />
-        <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+        <AvatarImage src={data.user.image || ''} />
+        <AvatarFallback>{getInitials(data.user.name)}</AvatarFallback>
       </Avatar>
       <div>
-        <h1 className="text-xl font-bold">{user.name}</h1>
-        <p className="text-muted-foreground text-base">@{user.username}</p>
+        <h1 className="text-xl font-bold">{data.user.name}</h1>
+        <p className="text-muted-foreground text-base">@{data.user.username}</p>
       </div>
     </div>
   )

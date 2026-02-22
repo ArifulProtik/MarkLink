@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { QUERY_KEYS } from './query-keys'
+import type { UserPublic } from '@/lib/types'
 import { client } from '@/lib/api'
 
 export const useGetUserWithUserNameQuery = (username: string) =>
@@ -8,7 +9,7 @@ export const useGetUserWithUserNameQuery = (username: string) =>
     queryFn: async () => {
       const res = await client.api.v1.users({ username }).get()
       if (!res.data) throw new Error('Not found')
-      return res.data
+      return res.data as UserPublic
     },
   })
 

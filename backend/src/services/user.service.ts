@@ -135,6 +135,8 @@ export const GetUserWithUsername = async (
     return {
       user: userData,
       followerCount: count,
+      isFollowed: false,
+      isFriend: false,
     }
   } catch (error) {
     if (error instanceof NotFoundError) {
